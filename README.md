@@ -1,3 +1,3 @@
 # DAFD Neural Optimizer
 
-To be added.
+AutoML feature for optimizing Deep Neural Networks architectures.
