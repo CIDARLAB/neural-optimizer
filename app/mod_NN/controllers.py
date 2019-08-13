@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timedelta
 
 from config import CONFIG, HYPERPARAMS
-from mod_NN.models import TUNABLE_MODELS, NO_TUNABLE_MODELS
+#from app.mod_NN.models import TUNABLE_MODELS, NO_TUNABLE_MODELS
 
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
@@ -25,9 +25,11 @@ from sklearn.metrics import roc_curve
 from sklearn.pipeline import Pipeline
 
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from keras.wrappers.scikit_learn import KerasClassifier, KerasRegressor
+from app.mod_NN.models import createClassifier, createRegressor
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-RESOURCES = os.path.join(APP_ROOT, CONFIG['path'])
+RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
 
 def test_run():
 	
@@ -39,8 +41,8 @@ def validFile(filename):
 
 def getDataType(filename):
 
-	complete_filename = os.path.join(RESOURCES, filename)
-	df = readFile(complete_filename)
+	#complete_filename = os.path.join(RESOURCES, filename)
+	df = readFile(filename)
 
 	val = []
 	flag = []
@@ -126,6 +128,7 @@ def getClassificationScore(name, scores, test, pred, prob):
 			roc = roc_auc_score(test, prob)
 
 	score_dict = {
+		'Mode': 'Classification',
 		'Model Name': name,
 		'Accuracy': acc,
 		'Precision': prec,
@@ -133,7 +136,7 @@ def getClassificationScore(name, scores, test, pred, prob):
 		'F-Score': f1,
 		'ROC-AUC': roc
 	}
-	return score_dict
+	return {k:[v] for k,v in score_dict.items() if v is not None}
 
 def getRegressionScore(name, scores, pred, test):
 
@@ -150,20 +153,48 @@ def getRegressionScore(name, scores, pred, test):
 			r2 = r2_score(test, pred)
 
 	score_dict = {
+		'Mode': 'Regression',
 		'Model Name': name,
 		'Mean Absolute Error': mae,
 		'Mean Squared Error': mse,
 		'RMSE': rmse,
 		'R-squared': r2
-	}
-	return score_dict
+	} 
+	return {k:[v] for k,v in score_dict.items() if v is not None}
 
-def runNN(payload, index=0, scaled_first=True, split_first=True):
+def runNN(payload, compare, tuning_params, index=0, scaled_first=True, split_first=True):
 
 	#results = []
+	print(payload['metrics'])
 
-	name = TUNABLE_MODELS[CONFIG['model_index']][0] if payload['hyper-param'] else NO_TUNABLE_MODELS[CONFIG['model_index']][0]
-	model = TUNABLE_MODELS[CONFIG['model_index']][1] if payload['hyper-param'] else NO_TUNABLE_MODELS[CONFIG['model_index']][1]
+	name = payload['model-name']
+	model = None
+	print(tuning_params)
+
+	if payload['hyper-param'] and payload['mode']=='Classification':
+		model = KerasClassifier(build_fn=createClassifier, loss_func='binary_crossentropy', opt_func='adam', act_hidden='relu', act_output='sigmoid')
+	elif payload['hyper-param'] and payload['mode']=='Regression':
+		model = KerasRegressor(build_fn=createRegressor, loss_func='mean_squared_error', opt_func='adam', act_hidden='relu', act_output='linear')
+	elif not payload['hyper-param'] and payload['mode']=='Classification':
+		model = KerasClassifier(build_fn=createClassifier,
+					loss_func='binary_crossentropy', opt_func='adam', 
+					batch_size=tuning_params['batch_size'],
+					epochs=tuning_params['epochs'],
+					num_hidden=tuning_params['num_hidden'],
+					node_hidden=tuning_params['node_hidden'],
+					act_hidden='relu', act_output='sigmoid')
+	elif not payload['hyper-param'] and payload['mode']=='Regression':
+		model = KerasRegressor(build_fn=createRegressor, 
+                    loss_func='mean_squared_error', opt_func='adam', 
+                    batch_size=tuning_params['batch_size'],
+                    epochs=tuning_params['epochs'],
+                    num_hidden=tuning_params['num_hidden'],
+                    node_hidden=tuning_params['node_hidden'],
+                    act_hidden='relu', act_output='linear')
+
+
+	#name = TUNABLE_MODELS[0][0] if payload['hyper-param'] else NO_TUNABLE_MODELS[0][0]
+	#model = TUNABLE_MODELS[0][1] if payload['hyper-param'] else NO_TUNABLE_MODELS[0][1]
 	print('Running', name, model, ', tuning hyperparameter:', payload['hyper-param'])
 
 	complete_filename = os.path.join(RESOURCES, payload['filename'])
@@ -185,10 +216,9 @@ def runNN(payload, index=0, scaled_first=True, split_first=True):
 		return ('For now, multi-label classification is not supported! Exiting...')
 
 	y = y.ravel()
-	metrics = payload['reg_metrics']
+	metrics = payload['metrics']
 	if payload['mode'] == 'Classification':
 		y = y - 1
-		metrics = payload['cls_metrics']
 
 	#if scaled_first:
 	#	X = StandardScaler().fit_transform(X)
@@ -204,9 +234,9 @@ def runNN(payload, index=0, scaled_first=True, split_first=True):
 	if payload['hyper-param'] is not None:
 
 		if payload['tuning'] == 'grids':
-			exe = GridSearchCV(pipeline, HYPERPARAMS[CONFIG['model_index']][1], cv=int(1/float(payload['test-size'])), n_jobs=-1, verbose=2)
+			exe = GridSearchCV(pipeline, tuning_params, cv=int(1/float(payload['test-size'])), n_jobs=-1, verbose=2)
 		elif payload['tuning'] == 'randoms':
-			exe = RandomizedSearchCV(pipeline, HYPERPARAMS[CONFIG['model_index']][1], cv=int(1/float(payload['test-size'])), n_jobs=-1, verbose=2)
+			exe = RandomizedSearchCV(pipeline, tuning_params, cv=int(1/float(payload['test-size'])), n_jobs=-1, verbose=2)
 		else:
 			return ('This part for Bayesian Optimization, or Swarm Intelligence... Exiting!')
 
@@ -250,6 +280,10 @@ def runNN(payload, index=0, scaled_first=True, split_first=True):
 
 	if payload['hyper-param']:
 
+		top3 = pd.DataFrame(exe.cv_results_)
+		top3.sort_values(by='rank_test_score', inplace=True)
+		print(top3)
+
 		best_params = exe.best_params_
 		print('Best config:', best_params)
 		y_pred = exe.best_estimator_.predict(X_test)
@@ -258,35 +292,35 @@ def runNN(payload, index=0, scaled_first=True, split_first=True):
 			json_str = json.dumps(exe.best_params_)
 			best_config_json = os.path.join(RESOURCES, payload['best-config-file'])
 			with open(best_config_json, 'w') as json_file:
-    			json_file.write(json_str)
+				json_file.write(json_str)
 
 		if payload['mode']=='Classification':
 			y_prob = exe.best_estimator_.predict_proba(X_test)[:, 1]
 			
-		model_saver = exe.best_estimator_['clf'].model
+		model_saver = exe.best_estimator_['mod'].model
 
 	else:
 		y_pred = exe.predict(X_test)
 		if payload['mode']=='Classification':
 			y_prob = exe.predict_proba(X_test)[:, 1]
 			
-		model_saver = pipeline.named_steps['clf'].model
-
+		model_saver = pipeline.named_steps['mod'].model
+	
 	if (payload['save-architecture']):
 	
-		model_json = model_saver.to_json()
-		
 		architecture = os.path.join(RESOURCES, payload['architecture-file'])
+		
 		with open(architecture, 'w') as json_file:
-    		json_file.write(model_json)
-    		
-    if (payload['save-weights']):
+			json_file.write(model_saver.to_json())
+		
+	if (payload['save-weights']):
     		
 		# serialize weights to HDF5
+
 		weights = os.path.join(RESOURCES, payload['weights-file'])
 		model_saver.save_weights(weights)
 		print("Saved model to disk")
-
+	
 
 	if (payload['mode']=='Classification'):
 		results = getClassificationScore(name, metrics, y_test, y_pred, y_prob)
