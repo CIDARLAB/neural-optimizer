@@ -17,3 +17,12 @@ def index():
 	session['logged_in'] = True
 	
 	return redirect(url_for('nn.index'))
+
+@app.route("/home.html")
+@app.route("/home")
+def home():
+	
+	session['user'] = 'garuda'
+	session['logged_in'] = True
+	
+	return redirect(url_for('nn.home'))

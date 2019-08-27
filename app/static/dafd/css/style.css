@@ -2,7 +2,8 @@
 	z-index: 3;
 }
 .main-container {
-	background-color: #cccccc;
+	position: fixed;
+	top:0px;
 }
 
 

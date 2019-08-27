@@ -38,7 +38,7 @@ def createClassifier(loss_func, opt_func, num_hidden, node_hidden, act_hidden, a
 
     model = Sequential()
 
-    for i in range(num_hidden):
+    for dummy_index in range(num_hidden):
         model.add(Dense(node_hidden, activation=act_hidden))
 
     model.add(Dense(1, activation=act_output))
@@ -50,7 +50,7 @@ def createRegressor(loss_func, opt_func, num_hidden, node_hidden, act_hidden, ac
 
     model = Sequential()
 
-    for i in range(num_hidden):
+    for dummy_index in range(num_hidden):
         model.add(Dense(node_hidden, activation=act_hidden))
 
     model.add(Dense(1))

@@ -17,6 +17,13 @@ def index():
 
     return render_template('dafd/index.html')
 
+@nn_blueprint.route('/home')
+@nn_blueprint.route('/home.html')
+def home():
+
+    return render_template('dafd/home.html')
+
+
 @nn_blueprint.route('/generate', methods=['GET', 'POST'])
 def generate():
 
