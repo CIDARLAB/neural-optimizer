@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang=en>
+    
+    <head>
+        {% block head %}
+        <title>:: DAFD Neural Optimizer</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+        <!--<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato">-->
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dafd/css/bootstrap.min.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dafd/css/style.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dafd/css/side-menu.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dafd/css/fullpage.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dafd/css/slider.css') }}"/>
+        {% endblock %}
+    </head>
+    
+    <body>
+        <div id="header">
+
+            <div class="openbtn" onclick="openNav()">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </div>
+            
+            <div id="mySidenav" class="sidenav text-left">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <a href="#">.: About Low-Cost Fabrication</a>
+                <a href="#">.: About Droplet-Based Microfluidics</a>
+                <a href="#">.: About Single-Cell Encapsulation</a>
+                <a href="#">.: Tips and Tricks</a>
+                <a href="#">.: Meet the Team</a>
+                <a href="#">.: Collaborate with Us</a>
+                <a href="#">.: Publications</a>
+            </div>
+                    
+        </div>
+        <div id="fullpage">
+     
+            {% block bigheader %}{% endblock %}
+            {% block smallheader %}{% endblock %}
+
+            <div class="container-fluid px-0">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </body>
+    
+    <script src="{{ url_for('static', filename='dafd/js/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dafd/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dafd/js/side-menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='dafd/js/fullpage.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dafd/js/slider.js') }}"></script>
+    <script src="{{ url_for('static', filename='dafd/js/scrolloverflow.min.js') }}"></script>
+
+    <script type="text/javascript">
+        var myFullpage = new fullpage('#fullpage', {
+            //sectionsColor: ['#f2f2f2', '#8399a0', '#8399a0', 'whitesmoke', '#ccddff'],
+            //slidesNavigation: true,
+			//navigation:true,
+            scrollOverflow: true
+        });
+    </script>
+    {% block add_script %}{% endblock %}
+ </html>

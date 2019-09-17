@@ -23,7 +23,7 @@ def home():
 
     return render_template('dafd/home.html')
 
-
+'''
 @nn_blueprint.route('/generate', methods=['GET', 'POST'])
 def generate():
 
@@ -32,6 +32,7 @@ def generate():
         print(request.form.getlist('selection'))
         
     return redirect(url_for('nn.index'))
+'''
 
 @nn_blueprint.route('/analysis', methods=['GET', 'POST'])
 def analysis():
