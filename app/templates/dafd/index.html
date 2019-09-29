@@ -7,8 +7,10 @@
 <div class="section active" id="section-1">
 	<div class="container-fluid full-height">
 		<div class="row dafd-header">
-			<div class="col-md-3"></div>
-			<div class="col-md-6 text-center">
+			<div class="col-md-2"></div>
+			<div class="col-md-8 text-center">
+
+				
 				<div class="logo">
 					<img src="{{ url_for('static', filename='dafd/img/dafd-logo.png') }}" width="400px"/>
 				</div>
@@ -16,16 +18,18 @@
 					<p>The first microfluidic design automation software to deliver a user-specified desired performance using machine learning.</p>
 				</div>
 				<div class="stakeholders">
-					<img src="{{ url_for('static', filename='dafd/img/cidar-logo.png') }}" height="60px"/>
-					<img src="{{ url_for('static', filename='dafd/img/bu-logo.png') }}" height="60px"/>
-					<img src="{{ url_for('static', filename='dafd/img/bdc-logo.png') }}" height="60px"/>
+					<img src="{{ url_for('static', filename='dafd/img/logo-Cidar-Color-small.png') }}" height="60px"/>&nbsp;
+					<img src="{{ url_for('static', filename='dafd/img/damp-lab-logo-2x_1.png') }}" height="60px"/>&nbsp;
+					<img src="{{ url_for('static', filename='dafd/img/BU.png') }}" height="60px"/>&nbsp;
+					<img src="{{ url_for('static', filename='dafd/img/BDC.png') }}" height="60px"/>&nbsp;
 				</div>
 				<div class="btn-container">
-					<button class="btn btn-1 btn-sep icon-info">Learn More</button>
-					<button class="btn btn-2 btn-sep icon-send" id="go-btn" href="#section-2">Let's Go</button>
+					<button class="btn btn-2 btn-sep">Forward Model</button>
+					<button class="btn btn-1 btn-sep" id="go-btn" href="#section-2">Reverse Model</button>
+					<button class="btn btn-2 btn-sep" id="go-btn" href="#section-2">Neural Optimizer</button>
 				</div>
 			</div>
-			<div class="col-md-3"></div>
+			<div class="col-md-2"></div>
 		</div>
 	</div>
 </div>
@@ -317,20 +321,20 @@
 		</div>
 		</div>
 	</div>
-</div>
-<div id="section-3" class="section">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-1"></div>
-			<div class="col-md-10">
-				<form action="{{ url_for('nn.analysis') }}" id="train-form" method="post" enctype="multipart/form-data">
-					<div class="form-group files">
-						<h6>Upload the Training Dataset</h6>
-						<input id="train-data" name="file" type="file" class="form-control" multiple=""/>
-					</div>
-				</form>
+	<div class="slide">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<form action="{{ url_for('nn.analysis') }}" id="train-form" method="post" enctype="multipart/form-data">
+						<div class="form-group files">
+							<h6>Upload the Training Dataset</h6>
+							<input id="train-data" name="file" type="file" class="form-control" multiple=""/>
+						</div>
+					</form>
+				</div>
+				<div class="col-md-1"></div>
 			</div>
-			<div class="col-md-1"></div>
 		</div>
 	</div>
 </div>
