@@ -1,41 +1,44 @@
 {% extends "layout.html" %}
 
-{% block bigheader %}
-{% endblock %}
-
 {%  block content %}
-<div class="section active" id="section-1">
-	<div class="container-fluid full-height">
-		<div class="row dafd-header">
-			<div class="col-md-2"></div>
-			<div class="col-md-8 text-center">
-
-				
-				<div class="logo">
-					<img src="{{ url_for('static', filename='dafd/img/dafd-logo.png') }}" width="400px"/>
+	<div class="section active" id="section-1">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 text-center">
+					<div class="row">
+						<div class="col-md-12 text-center">
+								<div class="logo">
+									<img src="{{ url_for('static', filename='img/dafd-logo.png') }}" width="300px"/>
+								</div>
+							<div class="banner">
+								<p>The first microfluidic design automation software to deliver a user-specified desired performance using machine learning.</p>
+							</div>
+						</div>
+						<!--<div class="col-md-6 text-center">
+							<header>
+								<video data-keepplaying autoplay="autoplay" muted="muted" loop="loop">
+									<source src="{{ url_for('static', filename='img/DAFD_place_holder_video.mp4') }}" type="video/mp4">
+								</video>
+							</header>
+						</div>-->
+					</div>
+					<div class="stakeholders">
+						<img class="stakeholders-img" src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/>
+						<img class="stakeholders-img" src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/>
+						<img class="stakeholders-img" src="{{ url_for('static', filename='img/BDC.png') }}"/>
+						<img class="stakeholders-img" src="{{ url_for('static', filename='img/BU.png') }}"/>
+					</div>
+					<div class="btn-container">
+						<!--<img src="{{ url_for('static', filename='img/design.png') }}" style='height:60px;'/>-->
+						<button class="btn btn-2 btn-sep" >Forward Model</button>
+						<button class="btn btn-1 btn-sep" id="go-btn" href="#section-2">Reverse Model</button>
+						<button class="btn btn-2 btn-sep" id="go-btn" href="#section-2">Neural Optimizer</button>
+					</div>
 				</div>
-				<div class="banner">
-					<p>The first microfluidic design automation software to deliver a user-specified desired performance using machine learning.</p>
-				</div>
-				<div class="stakeholders">
-					<img src="{{ url_for('static', filename='dafd/img/logo-Cidar-Color-small.png') }}" height="60px"/>&nbsp;
-					<img src="{{ url_for('static', filename='dafd/img/damp-lab-logo-2x_1.png') }}" height="60px"/>&nbsp;
-					<img src="{{ url_for('static', filename='dafd/img/BU.png') }}" height="60px"/>&nbsp;
-					<img src="{{ url_for('static', filename='dafd/img/BDC.png') }}" height="60px"/>&nbsp;
-				</div>
-				<div class="btn-container">
-					<button class="btn btn-2 btn-sep">Forward Model</button>
-					<button class="btn btn-1 btn-sep" id="go-btn" href="#section-2">Reverse Model</button>
-					<button class="btn btn-2 btn-sep" id="go-btn" href="#section-2">Neural Optimizer</button>
-				</div>
+				<div class="col-md-2"></div>
 			</div>
-			<div class="col-md-2"></div>
-		</div>
 	</div>
-</div>
-<div id="section-2" class="section">
-	<div class="slide">
-		<div class="container">
+	<div class="section" id="section-2">
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-10">
@@ -197,132 +200,128 @@
 				</div>
 				<div class="col-md-1"></div>
 			</div>
-			</div>
 	</div>
-	<div class="slide">
-		<div class="container">
-		<div class="row">
-			<div class="col-md-1"></div>
-			<div class="col-md-10">
-				<form action="" method="post" enctype="multipart/form-data">
-					<div class="form-group">
-						<div class="slidecontainer">
-							<div class="container">	
-								<h5>Performance Prediction of Droplet Generators</h5>
-								<div class="row">
-									<div class="col-md-12">
-										<p><h6>.: Design Parameters :.</h6></p>
+	<div class="section" id="section-3">
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<form action="" method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<div class="slidecontainer">
+								<div class="container">	
+									<h5>Performance Prediction of Droplet Generators</h5>
+									<div class="row">
+										<div class="col-md-12">
+											<p><h6>.: Design Parameters :.</h6></p>
+										</div>
 									</div>
-								</div>
-								<!--1st row-->
-								<div class="row slider-row">
-									<!--1st column-->
-									<div class="col-md-2 text-left">
-										<p class="field-tip">Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
-									</div>
-									<div class="col-md-3 text-left">
-										<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange2" onchange="updateIntInput(this.value, 'oriWid2');">
-									</div>
-									<div class="col-md-1 text-left">
-										<input size="4" type="text" id="oriWid2" value="75" readonly>
-									</div>
-									<!--2nd column-->
-									<div class="col-md-2 text-left">
-											<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<!--1st row-->
+									<div class="row slider-row">
+										<!--1st column-->
+										<div class="col-md-2 text-left">
+											<p class="field-tip">Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
 										</div>
 										<div class="col-md-3 text-left">
-											<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange2" onchange="updateFloatInput(this.value, 'normInlet2');">
+											<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange2" onchange="updateIntInput(this.value, 'oriWid2');">
 										</div>
 										<div class="col-md-1 text-left">
-											<input size="4" type="text" id="normInlet2" value="2" readonly>
+											<input size="4" type="text" id="oriWid2" value="75" readonly>
 										</div>
-								</div>
-								<!--3rd row-->
-								<div class="row slider-row">
-									<!--1st column-->
-									<div class="col-md-2 text-left">
-										<p class="field-tip">Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+										<!--2nd column-->
+										<div class="col-md-2 text-left">
+												<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+											</div>
+											<div class="col-md-3 text-left">
+												<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange2" onchange="updateFloatInput(this.value, 'normInlet2');">
+											</div>
+											<div class="col-md-1 text-left">
+												<input size="4" type="text" id="normInlet2" value="2" readonly>
+											</div>
 									</div>
-									<div class="col-md-3 text-left">
-										<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange2" onchange="updateFloatInput(this.value, 'aspRatio2');">
-									</div>
-									<div class="col-md-1 text-left">
-										<input size="4" type="text" id="aspRatio2" value="1" readonly>
-									</div>
-									<!--2nd column-->
-									<div class="col-md-2 text-left">
-											<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<!--3rd row-->
+									<div class="row slider-row">
+										<!--1st column-->
+										<div class="col-md-2 text-left">
+											<p class="field-tip">Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 										</div>
 										<div class="col-md-3 text-left">
-											<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange2" onchange="updateFloatInput(this.value, 'normOil2');">
+											<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange2" onchange="updateFloatInput(this.value, 'aspRatio2');">
 										</div>
 										<div class="col-md-1 text-left">
-											<input size="4" type="text" id="normOil2" value="2" readonly>
+											<input size="4" type="text" id="aspRatio2" value="1" readonly>
 										</div>
-								</div>
-								<!--4th row-->
-								<div class="row slider-row">
-									<!--1st column-->
-									<div class="col-md-2 text-left">
-										<p class="field-tip">Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
+										<!--2nd column-->
+										<div class="col-md-2 text-left">
+												<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+											</div>
+											<div class="col-md-3 text-left">
+												<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange2" onchange="updateFloatInput(this.value, 'normOil2');">
+											</div>
+											<div class="col-md-1 text-left">
+												<input size="4" type="text" id="normOil2" value="2" readonly>
+											</div>
 									</div>
-									<div class="col-md-3 text-left">
-										<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange2" onchange="updateFloatInput(this.value, 'expRatio2');">
-									</div>
-									<div class="col-md-1 text-left">
-										<input size="4" type="text" id="expRatio2" value="2" readonly>
-									</div>
-									<!--2nd column-->
-									<div class="col-md-2 text-left">
-											<p class="field-tip">Flow rate ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<!--4th row-->
+									<div class="row slider-row">
+										<!--1st column-->
+										<div class="col-md-2 text-left">
+											<p class="field-tip">Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
 										</div>
 										<div class="col-md-3 text-left">
-											<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange2" onchange="updateFloatInput(this.value, 'flowRatio2');">
+											<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange2" onchange="updateFloatInput(this.value, 'expRatio2');">
 										</div>
 										<div class="col-md-1 text-left">
-											<input size="4" type="text" id="flowRatio2" value="2" readonly>
+											<input size="4" type="text" id="expRatio2" value="2" readonly>
 										</div>
-								</div>
-								<!--5th row-->
-								<div class="row slider-row">
-									<!--1st column-->
-									<div class="col-md-2 text-left">
-										<p class="field-tip">Normalized orifice length<!--<span class="tip-content">unit in &#181;m</span>--></p>
+										<!--2nd column-->
+										<div class="col-md-2 text-left">
+												<p class="field-tip">Flow rate ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+											</div>
+											<div class="col-md-3 text-left">
+												<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange2" onchange="updateFloatInput(this.value, 'flowRatio2');">
+											</div>
+											<div class="col-md-1 text-left">
+												<input size="4" type="text" id="flowRatio2" value="2" readonly>
+											</div>
 									</div>
-									<div class="col-md-3 text-left">
-										<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange2" onchange="updateFloatInput(this.value, 'normOri2');">
-									</div>
-									<div class="col-md-1 text-left">
-										<input size="4" type="text" id="normOri2" value="1" readonly>
-									</div>
-									<!--2nd column-->
-									<div class="col-md-2 text-left">
-											<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+									<!--5th row-->
+									<div class="row slider-row">
+										<!--1st column-->
+										<div class="col-md-2 text-left">
+											<p class="field-tip">Normalized orifice length<!--<span class="tip-content">unit in &#181;m</span>--></p>
 										</div>
 										<div class="col-md-3 text-left">
-											<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange2" onchange="updateFloatInput(this.value, 'capNum2');">
+											<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange2" onchange="updateFloatInput(this.value, 'normOri2');">
 										</div>
 										<div class="col-md-1 text-left">
-											<input size="4" type="text" id="capNum2" value="0.03" readonly>
+											<input size="4" type="text" id="normOri2" value="1" readonly>
 										</div>
-								</div>
+										<!--2nd column-->
+										<div class="col-md-2 text-left">
+												<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+											</div>
+											<div class="col-md-3 text-left">
+												<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange2" onchange="updateFloatInput(this.value, 'capNum2');">
+											</div>
+											<div class="col-md-1 text-left">
+												<input size="4" type="text" id="capNum2" value="0.03" readonly>
+											</div>
+									</div>
 
-								<div class="row">
-									<div class="col-md-12">
-										<input type="submit" class="btn-section-2" value="Predict Performance"/>
+									<div class="row">
+										<div class="col-md-12">
+											<input type="submit" class="btn-section-2" value="Predict Performance"/>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</form>
+					</form>
+				</div>
+				<div class="col-md-1"></div>
 			</div>
-			<div class="col-md-1"></div>
-		</div>
-		</div>
 	</div>
-	<div class="slide">
-		<div class="container">
+	<div class="section" id="section-4">
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-10">
@@ -335,10 +334,7 @@
 				</div>
 				<div class="col-md-1"></div>
 			</div>
-		</div>
 	</div>
-</div>
-
 {% endblock %}
 
 {% block add_script %}

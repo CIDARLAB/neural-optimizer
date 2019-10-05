@@ -15,24 +15,22 @@ from app.mod_NN.controllers import validFile, getDataType, runNN
 @nn_blueprint.route('/index.html')
 def index():
 
-    return render_template('dafd/index.html')
+    return render_template('index.html')
 
-@nn_blueprint.route('/home')
-@nn_blueprint.route('/home.html')
-def home():
+@nn_blueprint.route('/dummy', methods=['GET', 'POST'])
+def dummy():
 
-    return render_template('dafd/home.html')
+    target = os.path.join(APP_ROOT, '../resources/inputs/')
+    filename = 'dafd.csv'
+    complete_filename = os.path.join(target, filename)
 
-'''
-@nn_blueprint.route('/generate', methods=['GET', 'POST'])
-def generate():
+    df = getDataType(complete_filename)
+    df = df.round(3)
+    columns = df.columns.tolist()
 
-    if request.method == 'POST':
-
-        print(request.form.getlist('selection'))
-        
-    return redirect(url_for('nn.index'))
-'''
+    model_name = 'model-NN-' + str(int(round(time.time() * 1000)))
+    
+    return render_template('analysis.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
 
 @nn_blueprint.route('/analysis', methods=['GET', 'POST'])
 def analysis():
@@ -42,9 +40,7 @@ def analysis():
         file = request.files['file']
 
         if not file:
-            target = os.path.join(APP_ROOT, '../resources/inputs/')
-            filename = 'dafd.csv'
-            complete_filename = os.path.join(target, filename)
+            return "ERROR"
         
         if validFile(file.filename):
 
@@ -60,7 +56,7 @@ def analysis():
 
         model_name = 'model-NN-' + str(int(round(time.time() * 1000)))
         
-        return render_template('dafd/analysis.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
+        return render_template('analysis.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
 
     return redirect(url_for('nn.index'))
 
@@ -69,28 +65,36 @@ def run():
 
     if request.method == 'POST':
         
-        compare = False
-        
         payload = {}
         payload['filename'] = request.form.get('filename')
-        payload['mode'] = request.form.get('submit')
+        payload['model-name'] = request.form.get('model-name')
+        payload['target'] = request.form.get('target_single')
+        payload['mode'] = request.form.get('mode')
+
+        payload['drops'] = request.form.getlist('drop')
+
+        payload['metrics'] = request.form.get('metrics')
+        payload['normalization'] = request.form.get('normalization')
+        payload['holdout'] = request.form.get('holdout')
+        payload['validation'] = request.form.get('validation')
+        payload['fold'] = request.form.get('fold')
+        payload['tuning'] = request.form.get('tuning')
+
+        '''
         payload['encoding'] = request.form.get('encoding')
         payload['missing'] = request.form.get('missing')
-        payload['normalization'] = request.form.get('normalization')
         payload['targets'] = request.form.getlist('target')
         payload['crossval'] = request.form.get('crossval')
-        payload['drops'] = request.form.getlist('drop')
-        payload['test-size'] = request.form.get('test-size')
         payload['cv_method'] = request.form.get('cv_method')
         payload['dim_red'] = request.form.get('dim_red')
         payload['num_of_dim'] = request.form.get('dimension')
         payload['hyper-param'] = request.form.get('hyper-param')
-        payload['tuning'] = request.form.get('tuning')
         payload['grids'] = request.form.get('grids')
         payload['model-name'] = request.form.get('model-name')
+        '''
 
         payload['filter'] = 'regime'	#this value only matter for regression
-        payload['selected_condition'] = 2	#Or 2, this value will not matter for regime classification
+        payload['selected_condition'] = 1	#Or 2, this value will not matter for regime classification
 
         payload['save-best-config'] = True
         payload['best-config-file'] = 'best-config-classification.json'
@@ -123,7 +127,7 @@ def run():
             node_hidden = [8]
         ###
         
-        if not payload['hyper-param']:
+        if payload['tuning'] == 'none':
             tuning_params = {
                 'batch_size': batch_size[0],
                 'epochs': epochs[0],
@@ -137,37 +141,16 @@ def run():
 				'mod__num_hidden': num_hidden
             }
 
-        #if (len(payload['targets']) == 0):
-        #    return 'Please pick one or more targets!'
+        results = runNN(payload, tuning_params)
 
-
-        num_folds = int(1/float(payload['test-size']))
-        if request.form.get('submit') == 'Classification':
-            if (len(payload['targets']) > 1):
-                return 'Multi-label Classification is not supported. Please go back!'
-
-            payload['metrics'] = request.form.getlist('cls_metrics')
-
-
-        elif request.form.get('submit') == 'Regression':
-            if (len(payload['targets']) > 1):
-                return 'Multi-label Regression is not supported. Please go back!'
-
-            payload['metrics'] = request.form.getlist('reg_metrics')
-
-        results = runNN(payload, compare, tuning_params)
-
-        cv = 'Yes' if payload['crossval'] or payload['hyper-param'] is not None else 'No'
-        hy = 'Yes' if payload['hyper-param'] is not None else 'No'
+        cv = 'Yes' if payload['validation']=='crossval' or payload['tuning']!='none' else 'No'
+        hy = 'Yes' if payload['tuning']!='none' else 'No'
 
         df = pd.DataFrame(results).round(3)
         cols = df.columns
         vals = df.values
 
-        print(results)
-
-        
-        return render_template('dafd/result.html', columns=cols, data=vals, crossval=cv, hyperparam=hy)
+        return render_template('result.html', columns=cols, data=vals, crossval=cv, hyperparam=hy)
         
     return redirect(url_for('nn.index'))
 

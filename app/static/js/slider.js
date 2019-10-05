@@ -7,7 +7,6 @@ function updateFloatInput(val, name) {
 }
 
 $('.field-tip').tooltip({
-     
     disabled: true,
     close: function( event, ui ) { $(this).tooltip('disable'); }
 });

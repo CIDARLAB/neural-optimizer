@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+ 
+{%  block content %}
+<!-- page content -->
+<div class="container">
+    <form action="" method='post'>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>Results</h3>
+                <input type='submit' name='submit' value='Download Model' class="btn btn-success run" onclick="alert('Selected Model Deployed')"/>
+                <div class="spacer"></div>
+                <table class="overview-table table table-condensed">
+                    <tr>
+                        {% for column in columns %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                        <th>X-val?</th>
+                        <th>Tuned?</th>
+                        <th>Selection</th>
+                    </tr>
+                    {% for row in data %}
+                    <tr>
+                        {% for col in row %}
+                            <td>{{ col }}</td>
+                        {% endfor %}
+                        <td>{{ crossval }}</td>
+                        <td>{{ hyperparam }}</td>
+                        <td>
+                            <!--<input type='hidden' name='model' value='{{row[0]}}'/>
+                            <input type='submit' name='details_{{ loop.index }}' value='See details' class="btn btn-success"/>-->
+                            <input type='checkbox' name='selection' value={{row[1]}}/>
+                            <!--<a href="/neural-net/generate_api"><input type="button" name='api' value='Generate API' class="btn btn-info"/></a>-->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--/page content -->
+{% endblock %}

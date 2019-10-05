@@ -28,20 +28,24 @@ from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from keras.wrappers.scikit_learn import KerasClassifier, KerasRegressor
 from app.mod_NN.models import createClassifier, createRegressor
 
+from keras import backend as K
+
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
-
-def test_run():
-	
-	print('Hello, world!')
 
 def validFile(filename):
 
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in set(['xlsx', 'xls', 'csv'])
 
+def readFile(filename):
+
+	df = pd.read_csv(filename)
+	df.rename(columns={'index': 'date'}, inplace=True)
+
+	return df
+
 def getDataType(filename):
 
-	#complete_filename = os.path.join(RESOURCES, filename)
 	df = readFile(filename)
 
 	val = []
@@ -59,57 +63,19 @@ def getDataType(filename):
 				val.append('text')
 				flag.append(2)
 
-	df1 = pd.DataFrame({'column': df.columns.tolist(), 'type': val, 'flag': flag})
+	#df1 = pd.DataFrame({'column': df.columns.tolist(), 'type': val, 'flag': flag})
+	df1 = pd.DataFrame({'column': df.columns.tolist(), 'type': val})
 	df2 = df.describe().round(2).transpose().reset_index().rename(columns={'index': 'column'})
 	unique = df.nunique().reset_index().rename(columns={'index': 'column', 0: 'unique'})
-	nan = df.isnull().sum().reset_index().rename(columns={'index': 'column', 0: 'missing'})
+	#nan = df.isnull().sum().reset_index().rename(columns={'index': 'column', 0: 'missing'})
 	
 	df3 = pd.merge(df1, unique, how='left')
-	df3 = pd.merge(df3, nan, how='left')
+	#df3 = pd.merge(df3, nan, how='left')
 	df3 = pd.merge(df3, df2, how='left')
 	
 	df3.fillna('', inplace=True)
 
 	return df3
-
-def readFile(filename):
-
-	df = pd.read_csv(filename)
-	df.rename(columns={'index': 'date'}, inplace=True)
-
-	return df
-
-def generateParams(payload):
-
-	params = []
-	if payload['missing'] != 'drop':
-		imputer = SimpleImputer(missing_values='NaN', strategy=payload['missing'])
-		params.append(('imputer', imputer))
-	if payload['encoding'] != 'none':
-		if payload['encoding'] == 'label':
-			encoder = LabelEncoder()
-		elif payload['encoding'] == 'onehot':
-			encoder = OneHotEncoder()
-		params.append(('encoder', encoder))
-	if payload['normalization'] != 'none':
-		if payload['normalization'] == 'minmax':
-			scaler = MinMaxScaler()
-		elif payload['normalization'] == 'standard':
-			scaler = StandardScaler()
-		elif payload['normalization'] == 'robust':
-			scaler = RobustScaler()
-		params.append(('scaler', scaler))
-	if payload['dim_red'] != None and payload['num_of_dim'] != None:
-		params.append(('reducer', PCA(n_components=int(payload['num_of_dim']))))
-
-	return params
-
-def makeDataset(df, targets):
-
-	X = df.drop(targets, axis=1)
-	y = df[targets]
-
-	return X.values, y.values
 
 def getClassificationScore(name, scores, test, pred, prob):
 
@@ -162,123 +128,131 @@ def getRegressionScore(name, scores, pred, test):
 	} 
 	return {k:[v] for k,v in score_dict.items() if v is not None}
 
-def runNN(payload, compare, tuning_params, index=0, scaled_first=True, split_first=True):
+def generateParams(payload):
 
-	#results = []
-	print(payload['metrics'])
+	params = []
+	'''
+	if payload['missing'] != 'drop':
+		imputer = SimpleImputer(missing_values='NaN', strategy=payload['missing'])
+		params.append(('imputer', imputer))
+	if payload['encoding'] != 'none':
+		if payload['encoding'] == 'label':
+			encoder = LabelEncoder()
+		elif payload['encoding'] == 'onehot':
+			encoder = OneHotEncoder()
+		params.append(('encoder', encoder))
+	'''
+	if payload['normalization'] != 'none':
+		if payload['normalization'] == 'minmax':
+			scaler = MinMaxScaler()
+		elif payload['normalization'] == 'standard':
+			scaler = StandardScaler()
+		elif payload['normalization'] == 'robust':
+			scaler = RobustScaler()
+		params.append(('scaler', scaler))
+	#if payload['dim_red'] != None and payload['num_of_dim'] != None:
+	#	params.append(('reducer', PCA(n_components=int(payload['num_of_dim']))))
 
-	name = payload['model-name']
+	return params
+
+def makeDataset(df, target):
+
+	X = df.drop(target, axis=1)
+	y = df[target]
+
+	return X.values, y.values.ravel()
+
+def runNN(payload, tuning_params):
+
+	K.clear_session()
+
 	model = None
 	print(tuning_params)
 
-	if payload['hyper-param'] and payload['mode']=='Classification':
-		model = KerasClassifier(build_fn=createClassifier, loss_func='binary_crossentropy', opt_func='adam', act_hidden='relu', act_output='sigmoid')
-	elif payload['hyper-param'] and payload['mode']=='Regression':
-		model = KerasRegressor(build_fn=createRegressor, loss_func='mean_squared_error', opt_func='adam', act_hidden='relu', act_output='linear')
-	elif not payload['hyper-param'] and payload['mode']=='Classification':
-		model = KerasClassifier(build_fn=createClassifier,
-					loss_func='binary_crossentropy', opt_func='adam', 
-					batch_size=tuning_params['batch_size'],
-					epochs=tuning_params['epochs'],
-					num_hidden=tuning_params['num_hidden'],
-					node_hidden=tuning_params['node_hidden'],
-					act_hidden='relu', act_output='sigmoid')
-	elif not payload['hyper-param'] and payload['mode']=='Regression':
-		model = KerasRegressor(build_fn=createRegressor, 
-                    loss_func='mean_squared_error', opt_func='adam', 
-                    batch_size=tuning_params['batch_size'],
-                    epochs=tuning_params['epochs'],
-                    num_hidden=tuning_params['num_hidden'],
-                    node_hidden=tuning_params['node_hidden'],
-                    act_hidden='relu', act_output='linear')
-
-
+	if payload['tuning']!='none':
+		if payload['mode']=='classification':
+			model = KerasClassifier(build_fn=createClassifier, loss_func='binary_crossentropy', opt_func='adam', act_hidden='relu', act_output='sigmoid')
+		elif payload['mode']=='regression':
+			model = KerasRegressor(build_fn=createRegressor, loss_func='mean_squared_error', opt_func='adam', act_hidden='relu', act_output='linear')
+	else:
+		if payload['mode']=='classification':
+			model = KerasClassifier(build_fn=createClassifier,
+						loss_func='binary_crossentropy', opt_func='adam', 
+						batch_size=tuning_params['batch_size'],
+						epochs=tuning_params['epochs'],
+						num_hidden=tuning_params['num_hidden'],
+						node_hidden=tuning_params['node_hidden'],
+						act_hidden='relu', act_output='sigmoid')
+		elif payload['mode']=='regression':
+			model = KerasRegressor(build_fn=createRegressor, 
+						loss_func='mean_squared_error', opt_func='adam', 
+						batch_size=tuning_params['batch_size'],
+						epochs=tuning_params['epochs'],
+						num_hidden=tuning_params['num_hidden'],
+						node_hidden=tuning_params['node_hidden'],
+						act_hidden='relu', act_output='linear')
+	
 	#name = TUNABLE_MODELS[0][0] if payload['hyper-param'] else NO_TUNABLE_MODELS[0][0]
 	#model = TUNABLE_MODELS[0][1] if payload['hyper-param'] else NO_TUNABLE_MODELS[0][1]
-	print('Running', name, model, ', tuning hyperparameter:', payload['hyper-param'])
+	#print('Running', name, model, ', tuning hyperparameter:', payload['hyper-param'])
 
 	complete_filename = os.path.join(RESOURCES, payload['filename'])
 	df = readFile(complete_filename)
 
-	if payload['mode']=='Regression':
-		df = df[df[payload['filter']]==payload['selected_condition']]
-
+	if payload['target'] in payload['drops']:
+		payload['drops'].remove(payload['target'])
 	df.drop(payload['drops'], axis=1, inplace=True)		#drop first, so NaN could be minimized
-	if payload['missing'] == 'drop':
-		df.dropna(inplace=True)
+	#if payload['missing'] == 'drop':
+	#	df.dropna(inplace=True)
 
 	params = generateParams(payload)
-
-	X, y = makeDataset(df, payload['targets'])
+	X, y = makeDataset(df, payload['target'])
 	
-	#For now, multi-label classification is not supported
-	if (len(payload['targets'])>1):
-		return ('For now, multi-label classification is not supported! Exiting...')
-
-	y = y.ravel()
-	metrics = payload['metrics']
-	if payload['mode'] == 'Classification':
+	if payload['mode'] == 'classification':
 		y = y - 1
 
-	#if scaled_first:
-	#	X = StandardScaler().fit_transform(X)
-	if split_first:
-		X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=float(payload['test-size']))
-	else:
-		X_train, X_test, y_train, y_test = X, X, y, y
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=float(payload['holdout']))
 
-	#params_copy = params.copy()
 	params.append(('mod', model))
 	pipeline = Pipeline(params)
 
-	if payload['hyper-param'] is not None:
+	if payload['tuning'] == 'grid':
+		exe = GridSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
+	elif payload['tuning'] == 'random':
+		exe = RandomizedSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
 
-		if payload['tuning'] == 'grids':
-			exe = GridSearchCV(pipeline, tuning_params, cv=int(1/float(payload['test-size'])), n_jobs=-1, verbose=2)
-		elif payload['tuning'] == 'randoms':
-			exe = RandomizedSearchCV(pipeline, tuning_params, cv=int(1/float(payload['test-size'])), n_jobs=-1, verbose=2)
-		else:
-			return ('This part for Bayesian Optimization, or Swarm Intelligence... Exiting!')
+	elif payload['validation'] == 'crossval':
+
+		scoring = payload['metrics']
+		if payload['mode']=='regression':
+			for n, i in enumerate(scoring):
+				if i == 'rmse':
+					scoring[n] = 'neg_mean_squared_error'
+				if i == 'mae':
+					scoring[n] = 'neg_mean_absolute_error'
+
+		start = datetime.now()
+		res = cross_validate(estimator=pipeline, X=X_train, y=y_train, cv=int(payload['fold']), scoring=scoring)
+		end = datetime.now()
+		print('Total execution time:', str(end-start))
+
+		res_dict = {}
+		res_dict['Model Name'] = payload['model-name']
+		for s in scoring:
+			key = 'test_' + s
+			res_dict[key] = res[key].mean()
+
+		return res_dict
 
 	else:
-
-		if payload['crossval'] is not None:
-
-			scoring = metrics.copy()
-			#print(scoring)
-			if payload['mode']=='Regression':
-				for n, i in enumerate(scoring):
-					if i == 'rmse':
-						scoring[n] = 'neg_mean_squared_error'
-					if i == 'mae':
-						scoring[n] = 'neg_mean_absolute_error'
-
-			#print(scoring)
-
-			start = datetime.now()
-			res = cross_validate(estimator=pipeline, X=X_train, y=y_train, cv=int(1/float(payload['test-size'])), scoring=scoring)
-			end = datetime.now()
-			print('Total execution time:', str(end-start))
-
-			res_dict = {}
-			res_dict['Model Name'] = name
-			for s in scoring:
-				key = 'test_' + s
-				res_dict[key] = res[key].mean()
-
-			return res_dict
-			#res['test_precision'].mean(), res['test_recall'].mean(), res['test_f1'].mean(), res['test_roc_auc'].mean()
-
-		else:
-
-			exe = pipeline
+		exe = pipeline
 
 	start = datetime.now()
 	exe.fit(X_train, y_train)
 	end = datetime.now()
 	print('Total execution time:', str(end-start))
 
-	if payload['hyper-param']:
+	if payload['tuning'] != 'none':
 
 		top3 = pd.DataFrame(exe.cv_results_)
 		top3.sort_values(by='rank_test_score', inplace=True)
@@ -294,14 +268,14 @@ def runNN(payload, compare, tuning_params, index=0, scaled_first=True, split_fir
 			with open(best_config_json, 'w') as json_file:
 				json_file.write(json_str)
 
-		if payload['mode']=='Classification':
+		if payload['mode']=='classification':
 			y_prob = exe.best_estimator_.predict_proba(X_test)[:, 1]
 			
 		model_saver = exe.best_estimator_['mod'].model
 
 	else:
 		y_pred = exe.predict(X_test)
-		if payload['mode']=='Classification':
+		if payload['mode']=='classification':
 			y_prob = exe.predict_proba(X_test)[:, 1]
 			
 		model_saver = pipeline.named_steps['mod'].model
@@ -309,23 +283,20 @@ def runNN(payload, compare, tuning_params, index=0, scaled_first=True, split_fir
 	if (payload['save-architecture']):
 	
 		architecture = os.path.join(RESOURCES, payload['architecture-file'])
-		
 		with open(architecture, 'w') as json_file:
 			json_file.write(model_saver.to_json())
 		
 	if (payload['save-weights']):
     		
 		# serialize weights to HDF5
-
 		weights = os.path.join(RESOURCES, payload['weights-file'])
 		model_saver.save_weights(weights)
 		print("Saved model to disk")
 	
-
-	if (payload['mode']=='Classification'):
-		results = getClassificationScore(name, metrics, y_test, y_pred, y_prob)
+	if (payload['mode']=='classification'):
+		results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
 	
-	elif (payload['mode']=='Regression'):
-		results = getRegressionScore(name, metrics, y_test, y_pred)
+	elif (payload['mode']=='regression'):
+		results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
 
 	return results
