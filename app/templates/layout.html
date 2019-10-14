@@ -37,26 +37,23 @@
                 <a href="#">.: Publications</a>
             </div>
         </div>-->
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-3 sidenav-fixed">
+                <div class="sidenav-fixed" style="padding:0px;">
                     <nav>
                         <ul class="menu fa-ul">
-                            <li><i class="fa fa-info-circle fa-lg"></i><a href="#">About Low-Cost Fabrication</a></li>
-                            <li><i class="fa fa-info-circle fa-lg"></i><a href="#">About Droplet-Based Microfluidics</a></li>
-                            <li><i class="fa fa-info-circle fa-lg"></i><a href="#">About Single-Cell Encapsulation</a></li>
-                            <li><i class="fa fa-exclamation-circle fa-lg"></i><a href="#">Tips and Tricks</a></li>
-                            <li><i class="fa fa-users"></i><a href="#">Meet the Team</a></li>
-                            <li><i class="fa fa-users"></i><a href="#">Collaborate with Us</a></li>
-                            <li><i class="fa fa-copy"></i><a href="#">Publications</a></li>
+                            <li><span class="inner"><i class="fa fa-home fa-lg"></i><a href="{{ url_for('index') }}">Home</a></span></li>
+                            <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('low_cost') }}">Low-Cost Fabrication</a></span></li>
+                            <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('droplet_based') }}">Droplet-Based Microfluidics</a></span></li>
+                            <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('single_cell') }}">Single-Cell Encapsulation</a></span></li>
+                            <li><span class="inner"><i class="fa fa-exclamation-circle fa-lg"></i><a href="{{ url_for('tips') }}">Tips and Tricks</a></span></li>
+                            <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('team') }}">Meet the Team</a></span></li>
+                            <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('collaborate') }}">Collaborate with Us</a></span></li>
+                            <li><span class="inner"><i class="fa fa-copy"></i><a href="{{ url_for('publications') }}">Publications</a></span></li>
                         </ul>
                     </nav>
                 </div>
-                <div class="col-md-9 right-content" id="fullpage">
+                <div class="right-content" id="fullpage" style="padding:0px;">
                     {% block content %}{% endblock %}
                 </div>
-            </div>
-        </div>
     </body>
     
     <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>

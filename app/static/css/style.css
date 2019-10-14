@@ -19,9 +19,6 @@ body {
     font-size: 16px;
     color: #444;
 }
-.btn-container {
-    padding-top: 30px;
-}
 .main-container {
 	position: fixed;
 	top: 0px;
@@ -29,14 +26,17 @@ body {
 }
 #header {
     position: fixed;
-    height: 78px;
+    height: 60px;
     display: block;
     width: 100%;
     z-index: 10;
+    background: rgba(26, 26, 26, 0.8);
+    color: #f2f2f2;
     text-align: center;
     padding: 20px 0 0 0;
     top: 0px;
 }
+
 #section-1 {
     background: #f2f2f2;
 }
@@ -56,6 +56,18 @@ body {
 }
 
 /* BUTTON */
+.btn-holder {
+    background: #429993;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center;  /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+}
+
+/*
 .btn {
     cursor: pointer;
     font-size: 14px;
@@ -63,6 +75,8 @@ body {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
+    margin: 0px 10px 0px 10px;
+    /*padding: 50px 10px 50px 10px;
 }
 
 .btn:after {
@@ -72,39 +86,47 @@ body {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
-}
+}*/
 
-/* Pseudo elements for icons */
+/* Pseudo elements for icons 
 .btn:before {
     font-family: 'FontAwesome';
     position: relative;
     -webkit-font-smoothing: antialiased;
-}
+}*/
 
-/* Icon separator */
+/* Icon separator
 .btn-sep {
     padding: 50px 10px 50px 10px;
 }
 
 .btn-sep:before {
     background: rgba(0,0,0,0.15);
-}
+} */
 
 /* Button 1 */
 .btn-1 {
+    font-size: 14px;
     background: #429993;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center;  /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.btn-1:hover {
+    background: #26484a;
     color: #fff;
 }
-
-.btn-1:hover {
-    background: #b7d16a;
-}
-
-.btn-1:active {
+/*.btn-1:active {
     background: #b7d16a;
     top: 2px;
 }
-
 .btn-1:before {
     position: absolute;
     height: 100%;
@@ -113,19 +135,48 @@ body {
     font-size: 140%;
     width: 60px;
     line-height: 3;
-}
+}*/
 
-/* Button 3 */
 .btn-2 {
+    font-size: 14px;
+    background: #b7d16a;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center;  /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.btn-2:hover {
     background: #26484a;
     color: #fff;
 }
 
-.btn-2:hover {
+.btn-3 {
+    font-size: 14px;
     background: #8399a0;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; 
+    align-items: center;  /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
-.btn-2:active {
+.btn-3:hover {
+    background: #26484a;
+    color: #fff;
+}
+
+/*.btn-2:active {
     background: #8399a0;
     top: 2px;
 }
@@ -138,7 +189,7 @@ body {
     font-size: 140%;
     width: 60px;
     line-height: 3;
-}
+}*/
 
 /* Icons */
 .icon-cart:before {
@@ -182,6 +233,7 @@ body {
     height: 56px;
     content: "";
     background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png);
+    /*background-image: url('../img/upload.png');*/
     display: block;
     margin: 0 auto;
     background-size: 100%;
@@ -206,8 +258,8 @@ body {
 
 .right-content {
     background: #f2f2f2;
-    width: 75%;
-    margin-left: 25%;
+    margin-left: 22%;
+    width: 78%;
 }
 .spacer {
     height: 10px;
@@ -243,13 +295,9 @@ h3, h4 {
     font-size: 12px;
 }
 
-.execute {
-    width: 150px;
-    height: 50px;
-}
-
 .sidenav-fixed {
     background: #26484a;
+    width: 22%;
     margin: 0px;
     padding: 0px;
     top: 0;
@@ -275,9 +323,9 @@ h3, h4 {
     /*outline: 1px solid red;*/
     padding-left: 0;
     padding-top: 100px;
-  }
+}
   
-  .menu li {
+.menu li {
     color: #f1f1f1;
     font-size: 14px;
     box-shadow: 3px 0 rgba(52,152,219,.2) inset;
@@ -285,13 +333,30 @@ h3, h4 {
     /*-webkit-transition: all .5s;
     -o-transition: all .5s;
     transition: all .5s;/*outline: 1px solid green*/
-  }
+}
   
-  .menu li:hover {
-      box-shadow: 400px 0 rgba(52,152,219,.2) inset;
-      margin-left: 1em;
-      -webkit-transition: all .5s;
-      -o-transition: all .5s;
-      transition: all .5s;
-    }
-  
+.menu li:hover {
+    box-shadow: 400px 0 rgba(52,152,219,.2) inset;
+    /*margin-left: 1em;*/
+    -webkit-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+
+.menu li .inner:hover {
+    margin-left: 1em;
+}
+
+.static-content {
+    font-size: 14px;
+}
+.content-container {
+    padding: 75px;
+}
+.vertical-spacer {
+    margin: 20px 0px 20px 0px;
+}
+.img-team {
+    height: 120px;
+    border-radius: 50%;
+}

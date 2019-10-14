@@ -8,7 +8,7 @@ nn_blueprint = Blueprint('nn', __name__)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-from app.mod_NN.controllers import validFile, getDataType, runNN
+from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, runReverse
 
 @nn_blueprint.route('/')
 @nn_blueprint.route('/index')
@@ -154,5 +154,103 @@ def run():
         
     return redirect(url_for('nn.index'))
 
+@nn_blueprint.route('/forward', methods=['GET', 'POST'])
+def forward():
+
+    if request.method == 'POST':
+
+        forward = {}
+        forward['orifice_size'] = request.form.get('oriWid2')
+        forward['aspect_ratio'] = request.form.get('aspRatio2')
+        forward['expansion_ratio'] = request.form.get('expRatio2')
+        forward['normalized_orifice_length'] = request.form.get('normOri2')
+        forward['normalized_water_inlet'] = request.form.get('normInlet2')
+        forward['normalized_oil_inlet'] = request.form.get('normOil2')
+        forward['flow_rate_ratio'] = request.form.get('flowRatio2')
+        forward['capillary_number'] = request.form.get('capNum2')
+
+        strOutput = runForward(forward)
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = round(float(parsed[0]), 3)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[1]), 3)
+        perform['Regime'] = 'Dripping' if parsed[2]=='1' else 'Jetting'
+
+        values = {}
+        values['Oil Flow Rate (ml/hr)'] = round(float(parsed[3]), 3)
+        values['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[4]), 3)
+        values['Droplet Inferred Size (\u03BCm)'] = round(float(parsed[5]), 3)
+
+        forward2 = {}
+        forward2['Orifice Size'] = forward['orifice_size']
+        forward2['Aspect Ratio'] = forward['aspect_ratio']
+        forward2['Expansion Ratio'] = forward['expansion_ratio']
+        forward2['Normalized Orifice Length'] = forward['normalized_orifice_length']
+        forward2['Normalized Water Inlet'] = forward['normalized_water_inlet']
+        forward2['Normalized Oil Inlet'] = forward['normalized_oil_inlet']
+        forward2['Flow Rate Ratio'] = forward['flow_rate_ratio']
+        forward2['Capillary Number'] = forward['capillary_number']
+
+        return render_template('forward.html', perform=perform, values=values, forward2=forward2)
+
+    return redirect(url_for('nn.index'))
+
+
+@nn_blueprint.route('/backward', methods=['GET', 'POST'])
+def backward():
+
+    if request.method == 'POST':
+    
+        constraints = {}
+        constraints['orifice_size'] = request.form.get('oriWid')
+        constraints['aspect_ratio'] = request.form.get('aspRatio')
+        constraints['expansion_ratio'] = request.form.get('expRatio')
+        constraints['normalized_orifice_length'] = request.form.get('normOri')
+        constraints['normalized_water_inlet'] = request.form.get('normInlet')
+        constraints['normalized_oil_inlet'] = request.form.get('normOil')
+        constraints['flow_rate_ratio'] = request.form.get('flowRatio')
+        constraints['capillary_number'] = request.form.get('capNum')
+        constraints['regime'] = request.form.get('regime')
+        
+        desired_vals = {}
+        desired_vals['generation_rate'] = request.form.get('genRate')
+        desired_vals['droplet_size'] = request.form.get('dropSize')
+
+        strOutput = runReverse(constraints, desired_vals)
+        parsed = strOutput.split(':')[1].split('|')[:-1]
+
+        geo = {}
+        geo['Orifice Width (\u03BCm)'] = round(float(parsed[0]), 3)
+        geo['Channel Depth (\u03BCm)'] = round(float(parsed[1]) * float(parsed[0]), 3)
+        geo['Outlet Channel Width (\u03BCm)'] = round(float(parsed[2]) * float(parsed[0]), 3)
+        geo['Orifice Length (\u03BCm)'] = round(float(parsed[3]) * float(parsed[0]), 3)
+        geo['Water Inlet Width (\u03BCm)'] = round(float(parsed[4]) * float(parsed[0]), 3)
+        geo['Oil Inlet Width (\u03BCm)'] = round(float(parsed[5]) * float(parsed[0]), 3)
+
+        flow = {}
+        flow['Flow Rate Ratio (Oil Flow Rate/Water Flow Rate)'] = round(float(parsed[6]), 3)
+        flow['Capillary Number'] = round(float(parsed[7]), 3)
+
+        opt = {}
+        opt['Point Source'] = parsed[8]
+
+        perform = {}
+        perform['Generation Rate (Hz)'] = round(float(parsed[9]), 3)
+        perform['Droplet Diameter (\u03BCm)'] = round(float(parsed[10]), 3)
+        perform['Inferred Droplet Diameter (\u03BCm)'] = round(float(parsed[14]), 3)
+        perform['Regime'] = 'Dripping' if parsed[11]=='1' else 'Jetting'
+
+        flowrate = {}
+        flowrate['Oil Flow Rate (ml/hr)'] = round(float(parsed[12]), 3)
+        flowrate['Water Flow Rate (\u03BCl/min)'] = round(float(parsed[13]), 3)
+
+        gen_rate = float(parsed[9])
+        flow_rate = float(parsed[13])
+        
+        return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
+                                gen_rate=gen_rate, flow_rate=flow_rate)
+
+    return redirect(url_for('nn.index'))
 
 

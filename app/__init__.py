@@ -13,16 +13,47 @@ app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
 @app.route("/index")
 def index():
 	
-	session['user'] = 'garuda'
-	session['logged_in'] = True
-	
 	return redirect(url_for('nn.index'))
 
-@app.route("/home.html")
-@app.route("/home")
-def home():
+@app.route("/low_cost.html")
+@app.route("/low_cost")
+def low_cost():
 	
-	session['user'] = 'garuda'
-	session['logged_in'] = True
+	return render_template('low-cost.html')
+
+@app.route("/droplet_based.html")
+@app.route("/droplet_based")
+def droplet_based():
 	
-	return redirect(url_for('nn.home'))
+	return render_template('droplet-based.html')
+
+@app.route("/single_cell.html")
+@app.route("/single_cell")
+def single_cell():
+	
+	return render_template('single-cell.html')
+
+@app.route("/tips.html")
+@app.route("/tips")
+def tips():
+	
+	return render_template('tips.html')
+
+@app.route("/team.html")
+@app.route("/team")
+def team():
+	
+	return render_template('team.html')
+
+@app.route("/collaborate.html")
+@app.route("/collaborate")
+def collaborate():
+	
+	return render_template('collaborate.html')
+
+@app.route("/publications.html")
+@app.route("/publications")
+def publications():
+	
+	return render_template('publications.html')
+

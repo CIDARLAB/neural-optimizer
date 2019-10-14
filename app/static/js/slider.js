@@ -14,3 +14,9 @@ $('.field-tip').tooltip({
 $('.field-tip').on('click', function () {
     $(this).tooltip('enable').tooltip('open');
 });
+
+function updateLambda(lambda, gen_rate, flow_rate) {
+    
+    document.getElementById('conc').value =  gen_rate * lambda * 60 / flow_rate
+
+}

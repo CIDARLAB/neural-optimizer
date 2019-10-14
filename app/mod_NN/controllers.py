@@ -30,6 +30,8 @@ from app.mod_NN.models import createClassifier, createRegressor
 
 from keras import backend as K
 
+from app.mod_dafd.DAFD_CMD import runDAFD
+
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
 
@@ -300,3 +302,31 @@ def runNN(payload, tuning_params):
 		results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
 
 	return results
+
+def runForward(forward):
+
+	with open("app/mod_dafd/cmd_inputs.txt", "w") as f: 
+		f.write("FORWARD\n")
+		for key in forward:
+			if forward[key] != None:
+				f.write(key + '=' + str(forward[key]) + '\n')
+
+	return runDAFD()
+
+def runReverse(constraints, desired_vals):
+
+	with open("app/mod_dafd/cmd_inputs.txt", "w") as f:
+
+		if constraints:
+			f.write("CONSTRAINTS\n")
+			for key in constraints:
+				if constraints[key] != None:
+					f.write(key + '=' + str(constraints[key]) + ':' + str(constraints[key]) + '\n')
+		if desired_vals:
+			f.write("DESIRED_VALS\n")
+			for key in desired_vals:
+				if desired_vals[key] != None:
+					f.write(key + '=' + str(desired_vals[key]) + '\n')
+
+	return runDAFD()
+
