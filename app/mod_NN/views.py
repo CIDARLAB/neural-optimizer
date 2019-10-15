@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, send_from_directory
 import pandas as pd
 import os
 from werkzeug.utils import secure_filename
@@ -253,4 +253,13 @@ def backward():
 
     return redirect(url_for('nn.index'))
 
+@nn_blueprint.route('/download', methods=['GET', 'POST'])
+def download():
+
+    if request.method == 'POST':
+
+        directory = os.path.join(APP_ROOT, '../resources/inputs/')
+        return send_from_directory(directory=directory, filename='weights-classification.h5', as_attachment=True)
+    
+    return redirect(url_for('nn.index'))
 

@@ -32,9 +32,9 @@
 			</div>
 			<div class="row">
 				<!--<img src="{{ url_for('static', filename='img/design.png') }}" style='height:60px;'/>-->
-				<div class="col-md-4"><div class="btn-1">Design Automation</div></div>
-				<div class="col-md-4"><div class="btn-2">Performance Prediction</div></div>
-				<div class="col-md-4"><div class="btn-3">Neural Optimizer</div></div>
+				<div class="col-md-4"><div class="btn-1" onclick="window.location.href='#secondPage'">Design Automation</div></div>
+				<div class="col-md-4"><div class="btn-2" onclick="window.location.href='#thirdPage'">Performance Prediction</div></div>
+				<div class="col-md-4"><div class="btn-3" onclick="window.location.href='#fourthPage'">Neural Optimizer</div></div>
 			</div>
 		</div>
 		<div class="col-md-2"></div>
@@ -64,7 +64,7 @@
 									<input type="range" min="5" max="500" value="5" class="slider" id="genRateRange" onchange="updateIntInput(this.value, 'genRate');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="genRate" name="genRate" value="5" readonly>
+									<input size="4" type="text" id="genRate" name="genRate" value="5">
 								</div>
 								<!--second column-->
 								<div class="col-md-2 text-left">
@@ -74,7 +74,7 @@
 									<input type="range" min="25" max="250" value="25" class="slider" id="dropSizeRange" onchange="updateIntInput(this.value, 'dropSize');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="dropSize" name="dropSize" value="25" readonly>
+									<input size="4" type="text" id="dropSize" name="dropSize" value="25">
 								</div>
 							</div>
 							<div class="row">
@@ -92,7 +92,7 @@
 									<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange" onchange="updateIntInput(this.value, 'oriWid');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="oriWid" name="oriWid" value="75" readonly>
+									<input size="4" type="text" id="oriWid" name="oriWid" value="75">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -102,7 +102,7 @@
 									<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange" onchange="updateFloatInput(this.value, 'normInlet');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normInlet" name="normInlet" value="2" readonly>
+									<input size="4" type="text" id="normInlet" name="normInlet" value="2">
 								</div>
 							</div>
 							<!--3rd row-->
@@ -115,7 +115,7 @@
 									<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange" onchange="updateFloatInput(this.value, 'aspRatio');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="aspRatio" name="aspRatio" value="1" readonly>
+									<input size="4" type="text" id="aspRatio" name="aspRatio" value="1">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -125,7 +125,7 @@
 									<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange" onchange="updateFloatInput(this.value, 'normOil');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normOil" name="normOil" value="2" readonly>
+									<input size="4" type="text" id="normOil" name="normOil" value="2">
 								</div>
 							</div>
 							<!--4th row-->
@@ -138,7 +138,7 @@
 									<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange" onchange="updateFloatInput(this.value, 'expRatio');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="expRatio" name="expRatio" value="2" readonly>
+									<input size="4" type="text" id="expRatio" name="expRatio" value="2">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -148,7 +148,7 @@
 									<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange" onchange="updateFloatInput(this.value, 'flowRatio');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="flowRatio" name="flowRatio" value="2" readonly>
+									<input size="4" type="text" id="flowRatio" name="flowRatio" value="2">
 								</div>
 							</div>
 							<!--5th row-->
@@ -161,7 +161,7 @@
 									<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange" onchange="updateFloatInput(this.value, 'normOri');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normOri" name="normOri" value="1" readonly>
+									<input size="4" type="text" id="normOri" name="normOri" value="1">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -171,7 +171,7 @@
 									<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange" onchange="updateFloatInput(this.value, 'capNum');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="capNum" name="capNum" value="0.03" readonly>
+									<input size="4" type="text" id="capNum" name="capNum" value="0.03">
 								</div>
 							</div>
 							<!--6th row-->
@@ -226,7 +226,7 @@
 									<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange2" onchange="updateIntInput(this.value, 'oriWid2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="oriWid2" name="oriWid2" value="75" readonly>
+									<input size="4" type="text" id="oriWid2" name="oriWid2" value="75">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -236,7 +236,7 @@
 									<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange2" onchange="updateFloatInput(this.value, 'normInlet2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normInlet2" name="normInlet2" value="2" readonly>
+									<input size="4" type="text" id="normInlet2" name="normInlet2" value="2">
 								</div>
 							</div>
 							<!--3rd row-->
@@ -249,7 +249,7 @@
 									<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange2" onchange="updateFloatInput(this.value, 'aspRatio2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="aspRatio2" name="aspRatio2" value="1" readonly>
+									<input size="4" type="text" id="aspRatio2" name="aspRatio2" value="1">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -259,7 +259,7 @@
 									<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange2" onchange="updateFloatInput(this.value, 'normOil2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normOil2" name="normOil2" value="2" readonly>
+									<input size="4" type="text" id="normOil2" name="normOil2" value="2">
 								</div>
 							</div>
 							<!--4th row-->
@@ -272,7 +272,7 @@
 									<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange2" onchange="updateFloatInput(this.value, 'expRatio2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="expRatio2" name="expRatio2" value="2" readonly>
+									<input size="4" type="text" id="expRatio2" name="expRatio2" value="2">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -282,7 +282,7 @@
 									<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange2" onchange="updateFloatInput(this.value, 'flowRatio2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="flowRatio2" name="flowRatio2" value="2" readonly>
+									<input size="4" type="text" id="flowRatio2" name="flowRatio2" value="2">
 								</div>
 							</div>
 							<!--5th row-->
@@ -295,7 +295,7 @@
 									<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange2" onchange="updateFloatInput(this.value, 'normOri2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normOri2" name="normOri2" value="1" readonly>
+									<input size="4" type="text" id="normOri2" name="normOri2" value="1">
 								</div>
 								<!--2nd column-->
 								<div class="col-md-2 text-left">
@@ -305,7 +305,7 @@
 									<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange2" onchange="updateFloatInput(this.value, 'capNum2');">
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="capNum2" name="capNum2" value="0.03" readonly>
+									<input size="4" type="text" id="capNum2" name="capNum2" value="0.03">
 								</div>
 							</div>
 							<div class="row">
