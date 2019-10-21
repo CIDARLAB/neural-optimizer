@@ -1,4 +1,4 @@
 Experimental outputs:39.0410958904,101.9955700867
 Desired outputs:5.0,25.0
 orifice_size,aspect_ratio,expansion_ratio,normalized_orifice_length,normalized_water_inlet,normalized_oil_inlet,flow_rate_ratio,capillary_number,regime,generation_rate,droplet_size,cost_function
-75.0,1.0,2.0,1.0,2.0,2.0,2.0,0.030000000000000027,1,13.856166,113.94862,3.8083339043544377
+75.0,1.0,2.0,1.0,2.0,2.0,2.0,0.06609599999999999,1,37.61036,99.47554,3.5696080971686692

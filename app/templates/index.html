@@ -48,147 +48,209 @@
 				<div class="form-group">
 					<div class="slidecontainer">
 						<div class="container">
-							<h5>Design Automation of Droplet Generators</h5>
+							<h5 class="vspace-title">Design Automation of Droplet Generators</h5>
 							<div class="row">
 								<div class="col-md-12">
-									<h6>.: Desired Performance :.</h6>
+									<h6 class="vspace-subtitle">.: Desired Performance :.</h6>
 								</div>
 							</div>
 							<!--1st row-->
-							<div class="row slider-row">
-								<!--first column-->
-								<div class="col-md-2 text-left">
-									<p class="field-tip">Generation rate<!--<span class="tip-content">unit in Hz</span>--></p>
-								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="5" max="500" value="5" class="slider" id="genRateRange" onchange="updateIntInput(this.value, 'genRate');">
-								</div>
+
+							<div class="row vspace-content">
+								<!--1st column-->
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="genRate" name="genRate" value="5">
+									<b>Enabled?</b>
 								</div>
+							</div>
+							<div class="row slider-one-col">
 								<!--second column-->
-								<div class="col-md-2 text-left">
-									<p class="field-tip">Droplet size<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="dropSizeCheck" onclick="disableSlider(this.id, 'dropSizeRange', 'dropSize');" checked>
 								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="25" max="250" value="25" class="slider" id="dropSizeRange" onchange="updateIntInput(this.value, 'dropSize');">
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Droplet diameter (&mu;m)<!--<span class="tip-content">unit in &#181;m</span>--></p>
+								</div>
+								<div class="col-md-6 text-left">
+									<input type="range" min="25" max="250" value="25" class="slider-activated" id="dropSizeRange" onchange="updateIntInput(this.value, 'dropSize');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="dropSize" name="dropSize" value="25">
 								</div>
 							</div>
+							<div class="row slider-one-col">
+								<!--first column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="genRateCheck" onclick="disableSlider(this.id, 'genRateRange', 'genRate');" checked>
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Generation rate (Hz)<!--<span class="tip-content">unit in Hz</span>--></p>
+								</div>
+								<div class="col-md-6 text-left">
+									<input type="range" min="5" max="500" value="5" class="slider-activated" id="genRateRange" onchange="updateIntInput(this.value, 'genRate');">
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="genRate" name="genRate" value="5">
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-md-12">
-									<h6>.: Design Constraints :.</h6>
+									<h6 class="vspace-subtitle">.: Design Constraints :.</h6>
+								</div>
+							</div>
+							
+							<div class="row vspace-content">
+								<!--1st column-->
+								<div class="col-md-1 text-left">
+									<b>Enabled?</b>
 								</div>
 							</div>
 							<!--2nd row-->
-							<div class="row slider-row">
+							<div class="row slider-one-col">
 								<!--1st column-->
-								<div class="col-md-2 text-left">
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="oriWidCheck" onclick="disableSlider(this.id, 'oriWidRange', 'oriWid');">
+								</div>
+								<div class="col-md-4 text-left">
 									<p class="field-tip">Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange" onchange="updateIntInput(this.value, 'oriWid');">
+								<div class="col-md-6 text-left">
+									<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange" onchange="updateIntInput(this.value, 'oriWid');" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="oriWid" name="oriWid" value="75">
-								</div>
-								<!--2nd column-->
-								<div class="col-md-2 text-left">
-									<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
-								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange" onchange="updateFloatInput(this.value, 'normInlet');">
-								</div>
-								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normInlet" name="normInlet" value="2">
+									<input size="4" type="text" id="oriWid" name="oriWid" value="75" disabled>
 								</div>
 							</div>
 							<!--3rd row-->
-							<div class="row slider-row">
+							<div class="row slider-one-col">
 								<!--1st column-->
-								<div class="col-md-2 text-left">
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="aspRatioCheck" onclick="disableSlider(this.id, 'aspRatioRange', 'aspRatio');">
+								</div>
+								<div class="col-md-4 text-left">
 									<p class="field-tip">Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange" onchange="updateFloatInput(this.value, 'aspRatio');">
+								<div class="col-md-6 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange" onchange="updateFloatInput(this.value, 'aspRatio');" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="aspRatio" name="aspRatio" value="1">
-								</div>
-								<!--2nd column-->
-								<div class="col-md-2 text-left">
-									<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
-								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange" onchange="updateFloatInput(this.value, 'normOil');">
-								</div>
-								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normOil" name="normOil" value="2">
+									<input size="4" type="text" id="aspRatio" name="aspRatio" value="1" disabled>
 								</div>
 							</div>
 							<!--4th row-->
-							<div class="row slider-row">
+							<div class="row slider-one-col">
 								<!--1st column-->
-								<div class="col-md-2 text-left">
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="expRatioCheck" onclick="disableSlider(this.id, 'expRatioRange', 'expRatio');">
+								</div>
+								<div class="col-md-4 text-left">
 									<p class="field-tip">Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange" onchange="updateFloatInput(this.value, 'expRatio');">
+								<div class="col-md-6 text-left">
+									<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange" onchange="updateFloatInput(this.value, 'expRatio');" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="expRatio" name="expRatio" value="2">
-								</div>
-								<!--2nd column-->
-								<div class="col-md-2 text-left">
-									<p class="field-tip">Flow rate ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
-								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange" onchange="updateFloatInput(this.value, 'flowRatio');">
-								</div>
-								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="flowRatio" name="flowRatio" value="2">
+									<input size="4" type="text" id="expRatio" name="expRatio" value="2" disabled>
 								</div>
 							</div>
 							<!--5th row-->
-							<div class="row slider-row">
+							<div class="row slider-one-col">
 								<!--1st column-->
-								<div class="col-md-2 text-left">
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="normOriCheck" onclick="disableSlider(this.id, 'normOriRange', 'normOri');">
+								</div>
+								<div class="col-md-4 text-left">
 									<p class="field-tip">Normalized orifice length<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange" onchange="updateFloatInput(this.value, 'normOri');">
+								<div class="col-md-6 text-left">
+									<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange" onchange="updateFloatInput(this.value, 'normOri');" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="normOri" name="normOri" value="1">
+									<input size="4" type="text" id="normOri" name="normOri" value="1" disabled>
 								</div>
+							</div>
+
+							<!--2nd row-->
+							<div class="row slider-one-col">
 								<!--2nd column-->
-								<div class="col-md-2 text-left">
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="normInletCheck" onclick="disableSlider(this.id, 'normInletRange', 'normInlet');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-6 text-left">
+									<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange" onchange="updateFloatInput(this.value, 'normInlet');" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="normInlet" name="normInlet" value="2" disabled>
+								</div>
+							</div>
+							<!--3rd row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="normOilCheck" onclick="disableSlider(this.id, 'normOilRange', 'normOil');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-6 text-left">
+									<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange" onchange="updateFloatInput(this.value, 'normOil');" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="normOil" name="normOil" value="2" disabled>
+								</div>
+							</div>
+							<!--4th row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="flowRatioCheck" onclick="disableSlider(this.id, 'flowRatioRange', 'flowRatio');">
+								</div>
+								<div class="col-md-4 text-left">
+									<p class="field-tip">Flow rate ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-6 text-left">
+									<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange" onchange="updateFloatInput(this.value, 'flowRatio');" disabled>
+								</div>
+								<div class="col-md-1 text-left">
+									<input size="4" type="text" id="flowRatio" name="flowRatio" value="2" disabled>
+								</div>
+							</div>
+							<!--5th row-->
+							<div class="row slider-one-col">
+								<!--2nd column-->
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="capNumCheck" onclick="disableSlider(this.id, 'capNumRange', 'capNum');">
+								</div>
+								<div class="col-md-4 text-left">
 									<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
-								<div class="col-md-3 text-left">
-									<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange" onchange="updateFloatInput(this.value, 'capNum');">
+								<div class="col-md-6 text-left">
+									<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange" onchange="updateFloatInput(this.value, 'capNum');" disabled>
 								</div>
 								<div class="col-md-1 text-left">
-									<input size="4" type="text" id="capNum" name="capNum" value="0.03">
+									<input size="4" type="text" id="capNum" name="capNum" value="0.03" disabled>
 								</div>
 							</div>
 							<!--6th row-->
-							<div class="row slider-row">
-								<!--1st column-->
-								<div class="col-md-6"></div>
+							<div class="row slider-one-col">
 								<!--2nd column-->
-								<div class="col-md-2 text-left">
-									<p class="field-tip">Regime<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								<div class="col-md-1 text-center">
+									<input type="checkbox" id="regimeCheck" onclick="disableCombo(this.id, 'regimeCombo');">
 								</div>
 								<div class="col-md-4 text-left">
-									<select class="cmbox" name="regime">
+									<p class="field-tip">Regime<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
+								</div>
+								<div class="col-md-6 text-left">
+									<select class="cmbox" name="regime" id="regimeCombo" disabled>
+										<option value="" selected>None</option>
 										<option value="1">Dripping</option>
 										<option value="2">Jetting</option>
 									</select>
 								</div>
 							</div>
+
 							<div class="row">
 								<div class="col-md-12">
 									<input type="submit" class="btn-section-2" value="Generate Design"/>
@@ -210,10 +272,10 @@
 				<div class="form-group">
 					<div class="slidecontainer">
 						<div class="container">	
-							<h5>Performance Prediction of Droplet Generators</h5>
+							<h5 class="vspace-title">Performance Prediction of Droplet Generators</h5>
 							<div class="row">
 								<div class="col-md-12">
-									<p><h6>.: Design Parameters :.</h6></p>
+									<h6 class="vspace-subtitle">.: Design Parameters :.</h6>
 								</div>
 							</div>
 							<!--1st row-->
@@ -223,7 +285,7 @@
 									<p class="field-tip">Orifice width<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="75" max="175" value="75" class="slider" id="oriWidRange2" onchange="updateIntInput(this.value, 'oriWid2');">
+									<input type="range" min="75" max="175" value="75" class="slider-activated" id="oriWidRange2" onchange="updateIntInput(this.value, 'oriWid2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="oriWid2" name="oriWid2" value="75">
@@ -233,7 +295,7 @@
 									<p class="field-tip">Normalized water inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="normInletRange2" onchange="updateFloatInput(this.value, 'normInlet2');">
+									<input type="range" min="200" max="400" value="200" class="slider-activated" id="normInletRange2" onchange="updateFloatInput(this.value, 'normInlet2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="normInlet2" name="normInlet2" value="2">
@@ -246,7 +308,7 @@
 									<p class="field-tip">Aspect ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="100" max="300" value="100" class="slider" id="aspRatioRange2" onchange="updateFloatInput(this.value, 'aspRatio2');">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="aspRatioRange2" onchange="updateFloatInput(this.value, 'aspRatio2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="aspRatio2" name="aspRatio2" value="1">
@@ -256,7 +318,7 @@
 									<p class="field-tip">Normalized oil inlet width<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="400" value="200" class="slider" id="normOilRange2" onchange="updateFloatInput(this.value, 'normOil2');">
+									<input type="range" min="200" max="400" value="200" class="slider-activated" id="normOilRange2" onchange="updateFloatInput(this.value, 'normOil2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="normOil2" name="normOil2" value="2">
@@ -269,7 +331,7 @@
 									<p class="field-tip">Expansion ratio<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="600" value="200" class="slider" id="expRatioRange2" onchange="updateFloatInput(this.value, 'expRatio2');">
+									<input type="range" min="200" max="600" value="200" class="slider-activated" id="expRatioRange2" onchange="updateFloatInput(this.value, 'expRatio2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="expRatio2" name="expRatio2" value="2">
@@ -279,7 +341,7 @@
 									<p class="field-tip">Flow rate ratio<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="200" max="2200" value="200" class="slider" id="flowRatioRange2" onchange="updateFloatInput(this.value, 'flowRatio2');">
+									<input type="range" min="200" max="2200" value="200" class="slider-activated" id="flowRatioRange2" onchange="updateFloatInput(this.value, 'flowRatio2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="flowRatio2" name="flowRatio2" value="2">
@@ -292,7 +354,7 @@
 									<p class="field-tip">Normalized orifice length<!--<span class="tip-content">unit in &#181;m</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="100" max="300" value="100" class="slider" id="normOriRange2" onchange="updateFloatInput(this.value, 'normOri2');">
+									<input type="range" min="100" max="300" value="100" class="slider-activated" id="normOriRange2" onchange="updateFloatInput(this.value, 'normOri2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="normOri2" name="normOri2" value="1">
@@ -302,7 +364,7 @@
 									<p class="field-tip">Capillary number<!--<span class="tip-content">Channel depth divided by orifice width</span>--></p>
 								</div>
 								<div class="col-md-3 text-left">
-									<input type="range" min="3" max="106" value="3" class="slider" id="capNumRange2" onchange="updateFloatInput(this.value, 'capNum2');">
+									<input type="range" min="3" max="106" value="3" class="slider-activated" id="capNumRange2" onchange="updateFloatInput(this.value, 'capNum2');">
 								</div>
 								<div class="col-md-1 text-left">
 									<input size="4" type="text" id="capNum2" name="capNum2" value="0.03">

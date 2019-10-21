@@ -91,3 +91,14 @@ function validityForm() {
         }
     }
 }
+
+function validityBackward() {
+
+    var value1 = document.getElementById('dropSizeCheck')
+    var value2 = document.getElementById('genRateCheck')
+
+    if(!value1.checked && !value2.checked) {
+        alert("Either 'droplet diameter' or 'generation rate' parameter has to be filled!");
+        event.preventDefault();
+    }
+}
