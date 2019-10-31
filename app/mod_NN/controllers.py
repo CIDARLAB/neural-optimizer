@@ -79,21 +79,21 @@ def getDataType(filename):
 
 	return df3
 
-def getClassificationScore(name, scores, test, pred, prob):
+def getClassificationScore(name, score, test, pred, prob):
 
 	acc, prec, rec, f1, roc = None, None, None, None, None
 
-	for score in scores:
-		if score == 'accuracy':
-			acc = accuracy_score(test, pred)
-		elif score == 'precision':
-			prec = precision_score(test, pred)
-		elif score == 'recall':
-			rec = recall_score(test, pred)
-		elif score == 'f1':
-			f1 = f1_score(test, pred)
-		elif score == 'roc_auc':
-			roc = roc_auc_score(test, prob)
+	#for score in scores:
+	if score == 'accuracy':
+		acc = accuracy_score(test, pred)
+	elif score == 'precision':
+		prec = precision_score(test, pred)
+	elif score == 'recall':
+		rec = recall_score(test, pred)
+	elif score == 'f1':
+		f1 = f1_score(test, pred)
+	elif score == 'roc_auc':
+		roc = roc_auc_score(test, prob)
 
 	score_dict = {
 		'Mode': 'Classification',
@@ -104,21 +104,22 @@ def getClassificationScore(name, scores, test, pred, prob):
 		'F-Score': f1,
 		'ROC-AUC': roc
 	}
+
 	return {k:[v] for k,v in score_dict.items() if v is not None}
 
-def getRegressionScore(name, scores, pred, test):
+def getRegressionScore(name, score, pred, test):
 
 	mae, mse, rmse, r2 = None, None, None, None
 
-	for score in scores:
-		if score == 'mae':
-			mae = mean_absolute_error(test, pred)
-		elif score == 'mse':
-			mse = mean_squared_error(test, pred)
-		elif score == 'rmse':
-			rmse = np.sqrt(mean_squared_error(test, pred))
-		elif score == 'r2':
-			r2 = r2_score(test, pred)
+	#for score in scores:
+	if score == 'mae':
+		mae = mean_absolute_error(test, pred)
+	elif score == 'mse':
+		mse = mean_squared_error(test, pred)
+	elif score == 'rmse':
+		rmse = np.sqrt(mean_squared_error(test, pred))
+	elif score == 'r2':
+		r2 = r2_score(test, pred)
 
 	score_dict = {
 		'Mode': 'Regression',

@@ -3,73 +3,69 @@
 {%  block content %}
 <!-- page content -->
 <div class="container content-container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <h4>Optimal Design Parameters</h4>
-                
-                <h5>Geometrics parameters</h5>
-                {% for key, value in geo.items() %}
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                {% endfor %}
-                <h5>Flow conditions</h5>
-                {% for key, value in flow.items() %}
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                {% endfor %}
-                <h5>Optimization strategy</h5>
-                {% for key, value in opt.items() %}
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                {% endfor %}
-                <h5>Predicted performance</h5>
-                {% for key, value in perform.items() %}
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                {% endfor %}
-                <h5>Flow rates</h5>
-                {% for key, value in flowrate.items() %}
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ key }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12">{{ value }}</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                {% endfor %}
-                <h5>Single cell encapsulation</h5>
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">Lambda (ratio of cells to droplets)</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value, {{ gen_rate }}, {{ flow_rate }});"></div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">Cell concentration (cells per &mu;l)</div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{ gen_rate * 0.1 * 60 / flow_rate }}" readonly></div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-                <div class="spacer"></div>
-
-                <br/>
-                <br/>
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
-                    </div>
-                </div>
-                <div class="spacer"></div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h4>Optimal Design Parameters</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <h5>Geometrics parameters</h5>
+            {% for key, value in geo.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Predicted performance</h5>
+            {% for key, value in perform.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <h5>Optimization strategy</h5>
+            {% for key, value in opt.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Flow conditions</h5>
+            {% for key, value in flow.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Flow rates</h5>
+            {% for key, value in flowrate.items() %}
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ key }}</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
+            </div>
+            {% endfor %}
+            <h5>Single cell encapsulation</h5>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">Lambda (ratio of cells to droplets)</div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="lambda" name="lambda" value="0.1" onchange="updateLambda(this.value, {{ gen_rate }}, {{ flow_rate }});"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">Cell concentration (cells per &mu;l)</div>
+                <div class="col-md-6 col-sm-12 col-xs-12"><input type="text" id="conc" name="conc" value="{{ gen_rate * 0.1 * 60 / flow_rate }}" readonly></div>
             </div>
         </div>
+    </div>
+
+    <br/>
+    <br/>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>
+        </div>
+    </div>
 </div>
 <!-- /page content -->
 {% endblock %}

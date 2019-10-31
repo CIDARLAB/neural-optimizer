@@ -75,7 +75,7 @@ def run():
 
         payload['metrics'] = request.form.get('metrics')
         payload['normalization'] = request.form.get('normalization')
-        payload['holdout'] = request.form.get('holdout')
+        payload['holdout'] = float(int(request.form.get('holdout'))/100)
         payload['validation'] = request.form.get('validation')
         payload['fold'] = request.form.get('fold')
         payload['tuning'] = request.form.get('tuning')

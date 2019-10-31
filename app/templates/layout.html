@@ -7,53 +7,36 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome.min.css') }}"/>
-        <!--<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato">-->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/side-menu.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fullpage.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/slider.css') }}"/>
-        <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/argon.min.css') }}"/>-->
         {% endblock %}
+        <script>
+                $(document).ready(function(){
+                  $('[data-toggle="tooltip"]').tooltip(); 
+                });
+                </script>
     </head>
     
     <body>
-        {% block bigheader %}{% endblock %}
-        {% block smallheader %}{% endblock %}
-        <!--<div id="header">
-            <div class="openbtn" onclick="openNav()">
-                <div class="bar1"></div>
-                <div class="bar2"></div>
-                <div class="bar3"></div>
-            </div>
-            <div id="mySidenav" class="sidenav text-left">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                <a href="#">.: About Low-Cost Fabrication</a>
-                <a href="#">.: About Droplet-Based Microfluidics</a>
-                <a href="#">.: About Single-Cell Encapsulation</a>
-                <a href="#">.: Tips and Tricks</a>
-                <a href="#">.: Meet the Team</a>
-                <a href="#">.: Collaborate with Us</a>
-                <a href="#">.: Publications</a>
-            </div>
-        </div>-->
-                <div class="sidenav-fixed" style="padding:0px;">
-                    <nav>
-                        <ul class="menu fa-ul">
-                            <li><span class="inner"><i class="fa fa-home fa-lg"></i><a href="{{ url_for('index') }}">Home</a></span></li>
-                            <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('low_cost') }}">Low-Cost Fabrication</a></span></li>
-                            <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('droplet_based') }}">Droplet-Based Microfluidics</a></span></li>
-                            <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('single_cell') }}">Single-Cell Encapsulation</a></span></li>
-                            <li><span class="inner"><i class="fa fa-exclamation-circle fa-lg"></i><a href="{{ url_for('tips') }}">Tips and Tricks</a></span></li>
-                            <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('team') }}">Meet the Team</a></span></li>
-                            <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('collaborate') }}">Collaborate with Us</a></span></li>
-                            <li><span class="inner"><i class="fa fa-copy"></i><a href="{{ url_for('publications') }}">Publications</a></span></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="right-content" id="fullpage" style="padding:0px;">
-                    {% block content %}{% endblock %}
-                </div>
+        <div class="sidenav">
+            <nav>
+                <ul class="menu fa-ul">
+                    <li><span class="inner"><i class="fa fa-home fa-lg"></i><a href="{{ url_for('index') }}">Home</a></span></li>
+                    <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('low_cost') }}">Low-Cost Fabrication</a></span></li>
+                    <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('droplet_based') }}">Droplet-Based Microfluidics</a></span></li>
+                    <li><span class="inner"><i class="fa fa-info-circle fa-lg"></i><a href="{{ url_for('single_cell') }}">Single-Cell Encapsulation</a></span></li>
+                    <li><span class="inner"><i class="fa fa-exclamation-circle fa-lg"></i><a href="{{ url_for('tips') }}">Tips and Tricks</a></span></li>
+                    <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('team') }}">Meet the Team</a></span></li>
+                    <li><span class="inner"><i class="fa fa-users"></i><a href="{{ url_for('collaborate') }}">Collaborate with Us</a></span></li>
+                    <li><span class="inner"><i class="fa fa-copy"></i><a href="{{ url_for('publications') }}">Publications</a></span></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="right-content" id="fullpage">
+            {% block content %}{% endblock %}
+        </div>
     </body>
     
     <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
@@ -61,10 +44,10 @@
     <script src="{{ url_for('static', filename='js/fullpage.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/slider.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scrolloverflow.min.js') }}"></script>
-
     <script src="{{ url_for('static', filename='js/form-control.js') }}"></script>
 
     <script type="text/javascript">
+        //NN optimizer submission
         document.getElementById("train-data").onchange = function() {
             document.getElementById("train-form").submit();
         };
@@ -72,35 +55,10 @@
         var myFullpage = new fullpage('#fullpage', {
             //sectionsColor: ['#f2f2f2', '#8399a0', '#8399a0', '#b7d16a'],
             //slidesNavigation: true,
-			anchors: ['firstPage', 'secondPage', 'thirdPage', 'fourthPage'],
+			anchors: ['home', 'designAutomation', 'performancePrediction', 'neuralOptimizer'],
 			navigation:true,
             scrollOverflow: true
         });
-
-        $(document).ready(function(){
-            // Add smooth scrolling to all links
-            $("#go-btn").on('click', function(event) {
-
-                // Make sure this.hash has a value before overriding default behavior
-                if (this.hash !== "") {
-                    // Prevent default anchor click behavior
-                    event.preventDefault();
-
-                // Store hash
-                var hash = this.hash;
-
-                // Using jQuery's animate() method to add smooth page scroll
-                // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-                $('html, body').animate({
-                    scrollTop: $(hash).offset().top
-                }, 800, function(){
-            
-                    // Add hash (#) to URL when done scrolling (default click behavior)
-                    window.location.hash = hash;
-                });
-                } // End if
-            });
-            });
     </script>
     {% block add_script %}{% endblock %}
  </html>

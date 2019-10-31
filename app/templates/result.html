@@ -8,29 +8,30 @@
             <div class="col-md-12 col-sm-12">
                 <h3>Results</h3>
                 <input type='submit' name='submit' value='Download Model' class="btn btn-success run"/>
+                <input type="button" class="btn btn-success" onclick="window.location.href='{{ url_for('index') }}'" value="Back to Home Screen"/>  
                 <div class="spacer"></div>
                 <table class="overview-table table table-condensed">
                     <tr>
+                        <th>Selection</th>
                         {% for column in columns %}
                             <th>{{ column }}</th>
                         {% endfor %}
                         <th>X-val?</th>
                         <th>Tuned?</th>
-                        <th>Selection</th>
                     </tr>
                     {% for row in data %}
                     <tr>
-                        {% for col in row %}
-                            <td>{{ col }}</td>
-                        {% endfor %}
-                        <td>{{ crossval }}</td>
-                        <td>{{ hyperparam }}</td>
                         <td>
                             <!--<input type='hidden' name='model' value='{{row[0]}}'/>
                             <input type='submit' name='details_{{ loop.index }}' value='See details' class="btn btn-success"/>-->
                             <input type='checkbox' name='selection' value={{row[1]}}/>
                             <!--<a href="/neural-net/generate_api"><input type="button" name='api' value='Generate API' class="btn btn-info"/></a>-->
                         </td>
+                        {% for col in row %}
+                            <td>{{ col }}</td>
+                        {% endfor %}
+                        <td>{{ crossval }}</td>
+                        <td>{{ hyperparam }}</td>
                     </tr>
                     {% endfor %}
                 </table>

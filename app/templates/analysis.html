@@ -103,10 +103,10 @@
                     <label class="col-md-4 col-sm-12 col-xs-12">Data scaling:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <select name='normalization' class='form-standard'>
-                            <option value='none' selected>None</option>
-                            <option value='minmax'>Min-Max Scaling</option>
+                            <option value='minmax' selected>Min-Max Scaling</option>
                             <option value='standard'>Standard Scaling</option>
                             <option value='robust'>Robust Scaling</option>
+                            <option value='none'>None</option>
                         </select>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
@@ -117,9 +117,9 @@
                     <label>Test size: <input type='text' name='test-size' value='0.2'/></label>
                 </div>-->
                 <div class="row">
-                    <label class="col-md-4 col-sm-12 col-xs-12">Test size:</label>
+                    <label class="col-md-4 col-sm-12 col-xs-12">Test size (in %):</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
-                        <input class='form-standard form-text' type='text' id='holdout' name='holdout' value='0.2'/>
+                        <input class='form-standard form-text' type='text' id='holdout' name='holdout' value='20'/>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                     </div>
@@ -138,23 +138,11 @@
                     <label><input type='radio' name='tuning' value='bayesian'/>Bayesian Optimization</label>
                 </div>-->
                 <div class="row">
-                    <label class="col-md-4 col-sm-12 col-xs-12">Hyperparameter tuning:</label>
-                    <div class="col-md-4 col-sm-12 col-xs-12">
-                        <select id='hp_select' class='form-standard' name='tuning' onChange="activateFold()">
-                            <option value='none' selected>None</option>
-                            <option value='grid'>Grid Search</option>
-                            <option value='random'>Random Search</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
-                </div>
-
-                <div class="row">
                     <label class="col-md-4 col-sm-12 col-xs-12">Validation method:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <select id='cv_select' class='form-standard' name='validation' onChange="activateFold()">
-                            <option value='holdout' selected>Train and Holdout</option>
-                            <option value='crossval'>Cross Validation</option>
+                            <option value='crossval' selected>Cross Validation</option>
+                            <option value='holdout'>Train and Holdout</option>
                         </select>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
@@ -163,7 +151,7 @@
                 <div class="row">
                     <label class="col-md-4 col-sm-12 col-xs-12">Number of folds:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
-                        <input id='fold_text' class='form-standard form-text' type='text' name='fold' value='5' disabled='disabled'/>
+                        <input id='fold_text' class='form-standard form-text' type='text' name='fold' value='5'/>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                     </div>
@@ -171,26 +159,38 @@
 
 
                 <h4>Neural-Network Settings</h4>
-                <div class="subtext">Split with comma (,) for multiple values for each parameter</div>
+                <div class="row">
+                    <label class="col-md-4 col-sm-12 col-xs-12">Network tuning:</label>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <select id='hp_select' class='form-standard' name='tuning' onChange="activateFold()">
+                            <option value='grid' selected>Grid Search</option>
+                            <option value='random'>Random Search</option>
+                            <option value='none'>None</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-sm-12 col-xs-12"></div>
+                </div>
+
+                <div id="network-setting" class="subtext">Split with comma (,) for multiple values for each parameter</div>
                 <div class="spacer"></div>
                 <div class="row">
                     <label class="col-md-4 col-sm-12 col-xs-12">Epoch:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
-                        <input class='form-standard form-text' id='reqParam1' type='text' name='epoch' value='32'/>
+                        <input class='form-standard form-text' id='reqParam1' type='text' name='epoch' value='100'/>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12"></div>
                 </div>
                 <div class="row">
                     <label class="col-md-4 col-sm-12 col-xs-12">Batch-Size:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
-                        <input class='form-standard form-text' id='reqParam2' type='text' name='batch' value='100'/>
+                        <input class='form-standard form-text' id='reqParam2' type='text' name='batch' value='1'/>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12"></div>
                 </div>
                 <div class="row">
                     <label class="col-md-4 col-sm-12 col-xs-12">Number of Hidden Layers:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
-                        <input class='form-standard form-text' id='reqParam3' type='text' name='num_layers' value='8'/>
+                        <input class='form-standard form-text' id='reqParam3' type='text' name='num_layers' value='4'/>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12"></div>
                 </div>

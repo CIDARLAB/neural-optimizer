@@ -1,4 +1,4 @@
-.slidecontainer {
+.slider-container {
     background: #f1f1f1;
     outline: 2px dashed #92b0b3;
     outline-offset: -10px;
@@ -8,7 +8,7 @@
     text-align: center;
     margin: 0;
     width: 100% !important;
-    font-size: 12px;
+    font-size: 14px;
     margin: 100px 0px 100px 0px;
 }
 

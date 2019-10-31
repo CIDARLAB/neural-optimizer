@@ -26,11 +26,17 @@ function populateMetrics(){
 function activateFold() {
     var cv = document.getElementById("cv_select").selectedIndex;
     var tune = document.getElementById("hp_select").selectedIndex;
-    if (cv == 1 || tune == 1) {
+    if (cv == 0 || tune != 2) {
         document.getElementById("fold_text").disabled = false;
     }
     else {
         document.getElementById("fold_text").disabled = true;
+    }
+    if (tune != 2) {
+        document.getElementById("network-setting").innerHTML = "Split with comma (,) for multiple values for each parameter";
+    }
+    else {
+        document.getElementById("network-setting").innerHTML = "Enter a value for each parameter";
     }
 }
 
@@ -57,8 +63,8 @@ function validityForm() {
     var holdout = document.getElementById('holdout').value;
     //if (holdout != '') {
         holdout = parseFloat(holdout)
-        if (isNaN(holdout) || holdout <= 0.0 || holdout > 1.0) {
-            str += 'Enter a correct number of holdout size (must be between 0.0 - 1.0)!\n';
+        if (isNaN(holdout) || holdout <= 0 || holdout > 100) {
+            str += 'Enter a correct number of holdout size (must be between 0 - 100%)!\n';
             err++;
             //alert('Enter a correct number for the holdout size (must be between 0.0 - 1.0)!');
             //event.preventDefault();
