@@ -141,7 +141,7 @@ def run():
 				'mod__num_hidden': num_hidden
             }
 
-        results = runNN(payload, tuning_params)
+        results, config = runNN(payload, tuning_params)
 
         cv = 'Yes' if payload['validation']=='crossval' or payload['tuning']!='none' else 'No'
         hy = 'Yes' if payload['tuning']!='none' else 'No'
@@ -149,8 +149,8 @@ def run():
         df = pd.DataFrame(results).round(3)
         cols = df.columns
         vals = df.values
-
-        return render_template('result.html', columns=cols, data=vals, crossval=cv, hyperparam=hy)
+        
+        return render_template('result.html', columns=cols, data=vals, crossval=cv, hyperparam=hy, architecture=config)
         
     return redirect(url_for('nn.index'))
 

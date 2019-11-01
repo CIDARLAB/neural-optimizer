@@ -134,17 +134,6 @@ def getRegressionScore(name, score, pred, test):
 def generateParams(payload):
 
 	params = []
-	'''
-	if payload['missing'] != 'drop':
-		imputer = SimpleImputer(missing_values='NaN', strategy=payload['missing'])
-		params.append(('imputer', imputer))
-	if payload['encoding'] != 'none':
-		if payload['encoding'] == 'label':
-			encoder = LabelEncoder()
-		elif payload['encoding'] == 'onehot':
-			encoder = OneHotEncoder()
-		params.append(('encoder', encoder))
-	'''
 	if payload['normalization'] != 'none':
 		if payload['normalization'] == 'minmax':
 			scaler = MinMaxScaler()
@@ -153,8 +142,6 @@ def generateParams(payload):
 		elif payload['normalization'] == 'robust':
 			scaler = RobustScaler()
 		params.append(('scaler', scaler))
-	#if payload['dim_red'] != None and payload['num_of_dim'] != None:
-	#	params.append(('reducer', PCA(n_components=int(payload['num_of_dim']))))
 
 	return params
 
@@ -170,8 +157,9 @@ def runNN(payload, tuning_params):
 	K.clear_session()
 
 	model = None
-	print(tuning_params)
+	best_config = None
 
+	'''Selecting the models'''
 	if payload['tuning']!='none':
 		if payload['mode']=='classification':
 			model = KerasClassifier(build_fn=createClassifier, loss_func='binary_crossentropy', opt_func='adam', act_hidden='relu', act_output='sigmoid')
@@ -195,18 +183,13 @@ def runNN(payload, tuning_params):
 						node_hidden=tuning_params['node_hidden'],
 						act_hidden='relu', act_output='linear')
 	
-	#name = TUNABLE_MODELS[0][0] if payload['hyper-param'] else NO_TUNABLE_MODELS[0][0]
-	#model = TUNABLE_MODELS[0][1] if payload['hyper-param'] else NO_TUNABLE_MODELS[0][1]
-	#print('Running', name, model, ', tuning hyperparameter:', payload['hyper-param'])
-
+	'''Preparing dataset and pipeline'''
 	complete_filename = os.path.join(RESOURCES, payload['filename'])
 	df = readFile(complete_filename)
 
 	if payload['target'] in payload['drops']:
 		payload['drops'].remove(payload['target'])
-	df.drop(payload['drops'], axis=1, inplace=True)		#drop first, so NaN could be minimized
-	#if payload['missing'] == 'drop':
-	#	df.dropna(inplace=True)
+	df.drop(payload['drops'], axis=1, inplace=True)
 
 	params = generateParams(payload)
 	X, y = makeDataset(df, payload['target'])
@@ -219,20 +202,84 @@ def runNN(payload, tuning_params):
 	params.append(('mod', model))
 	pipeline = Pipeline(params)
 
-	if payload['tuning'] == 'grid':
-		exe = GridSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
-	elif payload['tuning'] == 'random':
-		exe = RandomizedSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
+	'''Hyper-parameter tuning, cross-validation, or holdout methods'''
+	if payload['tuning'] != 'none':
 
-	elif payload['validation'] == 'crossval':
+		if payload['tuning'] == 'grid':
+			exe = GridSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
+		elif payload['tuning'] == 'random':
+			exe = RandomizedSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
 
-		scoring = payload['metrics']
-		if payload['mode']=='regression':
-			for n, i in enumerate(scoring):
-				if i == 'rmse':
-					scoring[n] = 'neg_mean_squared_error'
-				if i == 'mae':
-					scoring[n] = 'neg_mean_absolute_error'
+		start = datetime.now()
+		exe.fit(X_train, y_train)
+		end = datetime.now()
+		print('Total execution time:', str(end-start))
+
+		'''
+		top3 = pd.DataFrame(exe.cv_results_)
+		top3.sort_values(by='rank_test_score', inplace=True)
+		print('******Each fold result******')
+		print(top3)
+		'''
+
+		best_params = exe.best_params_
+		print('Best config:', best_params)
+
+		y_pred = exe.best_estimator_.predict(X_test)
+		if payload['mode']=='classification':
+			y_prob = exe.best_estimator_.predict_proba(X_test)[:, 1]
+		
+		if payload['save-best-config']:
+			json_str = json.dumps(exe.best_params_)
+			best_config_json = os.path.join(RESOURCES, payload['best-config-file'])
+			with open(best_config_json, 'w') as json_file:
+				json_file.write(json_str)
+
+		model_saver = exe.best_estimator_['mod'].model
+		best_config = {
+            'Batch-size': best_params['mod__batch_size'],
+            'Epoch': best_params['mod__epochs'],
+            'Number of hidden layers': best_params['mod__num_hidden'],
+            'Number of nodes per layer': best_params['mod__node_hidden']
+        }
+
+		if (payload['mode']=='classification'):
+			results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
+		elif (payload['mode']=='regression'):
+			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
+
+	elif payload['tuning'] == 'none' and payload['validation'] == 'holdout':
+		#exe = pipeline
+		start = datetime.now()
+		pipeline.fit(X_train, y_train)
+		end = datetime.now()
+		print('Total execution time:', str(end-start))
+
+		y_pred = pipeline.predict(X_test)
+		if payload['mode']=='classification':
+			y_prob = pipeline.predict_proba(X_test)[:, 1]
+			
+		model_saver = pipeline.named_steps['mod'].model
+		best_config = {
+            'Batch-size': tuning_params['batch_size'],
+            'Epoch': tuning_params['epochs'],
+            'Number of hidden layers': tuning_params['num_hidden'],
+            'Number of nodes per layer': tuning_params['node_hidden']
+        }
+		if (payload['mode']=='classification'):
+			results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
+		elif (payload['mode']=='regression'):
+			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
+
+
+	elif payload['tuning'] == 'none' and payload['validation'] == 'crossval':
+
+		if payload['metrics'] == 'mse':
+			scoring = ['neg_mean_squared_error']
+		elif payload['metrics'] == 'mae':
+			scoring = ['neg_mean_absolute_error']
+		else:
+			scoring = [payload['metrics']]
 
 		start = datetime.now()
 		res = cross_validate(estimator=pipeline, X=X_train, y=y_train, cv=int(payload['fold']), scoring=scoring)
@@ -241,68 +288,24 @@ def runNN(payload, tuning_params):
 
 		res_dict = {}
 		res_dict['Model Name'] = payload['model-name']
-		for s in scoring:
-			key = 'test_' + s
-			res_dict[key] = res[key].mean()
+		for score in scoring:
+			key = 'test_' + score
+		res_dict[key] = res[key].mean()
 
-		return res_dict
-
-	else:
-		exe = pipeline
-
-	start = datetime.now()
-	exe.fit(X_train, y_train)
-	end = datetime.now()
-	print('Total execution time:', str(end-start))
-
-	if payload['tuning'] != 'none':
-
-		top3 = pd.DataFrame(exe.cv_results_)
-		top3.sort_values(by='rank_test_score', inplace=True)
-		print(top3)
-
-		best_params = exe.best_params_
-		print('Best config:', best_params)
-		y_pred = exe.best_estimator_.predict(X_test)
-		
-		if payload['save-best-config']:
-			json_str = json.dumps(exe.best_params_)
-			best_config_json = os.path.join(RESOURCES, payload['best-config-file'])
-			with open(best_config_json, 'w') as json_file:
-				json_file.write(json_str)
-
-		if payload['mode']=='classification':
-			y_prob = exe.best_estimator_.predict_proba(X_test)[:, 1]
-			
-		model_saver = exe.best_estimator_['mod'].model
-
-	else:
-		y_pred = exe.predict(X_test)
-		if payload['mode']=='classification':
-			y_prob = exe.predict_proba(X_test)[:, 1]
-			
-		model_saver = pipeline.named_steps['mod'].model
+		print(res_dict)
 	
 	if (payload['save-architecture']):
-	
 		architecture = os.path.join(RESOURCES, payload['architecture-file'])
 		with open(architecture, 'w') as json_file:
 			json_file.write(model_saver.to_json())
+		print("Saved architecture to disk")
 		
 	if (payload['save-weights']):
-    		
-		# serialize weights to HDF5
 		weights = os.path.join(RESOURCES, payload['weights-file'])
 		model_saver.save_weights(weights)
 		print("Saved model to disk")
 	
-	if (payload['mode']=='classification'):
-		results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
-	
-	elif (payload['mode']=='regression'):
-		results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
-
-	return results
+	return results, best_config
 
 def runForward(forward):
 

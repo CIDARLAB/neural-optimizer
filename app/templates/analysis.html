@@ -100,12 +100,12 @@
                     <label><input type='radio' name='normalization' value='none'/>None</label>
                 </div>-->
                 <div class="row">
-                    <label class="col-md-4 col-sm-12 col-xs-12">Data scaling:</label>
+                    <label class="col-md-4 col-sm-12 col-xs-12">Data normalization:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <select name='normalization' class='form-standard'>
-                            <option value='minmax' selected>Min-Max Scaling</option>
-                            <option value='standard'>Standard Scaling</option>
-                            <option value='robust'>Robust Scaling</option>
+                            <option value='minmax' selected>Min-Max Scaler</option>
+                            <option value='standard'>Standard Scaler</option>
+                            <option value='robust'>Robust Scaler</option>
                             <option value='none'>None</option>
                         </select>
                     </div>
@@ -151,7 +151,7 @@
                 <div class="row">
                     <label class="col-md-4 col-sm-12 col-xs-12">Number of folds:</label>
                     <div class="col-md-4 col-sm-12 col-xs-12">
-                        <input id='fold_text' class='form-standard form-text' type='text' name='fold' value='5'/>
+                        <input id='fold_text' class='form-standard form-text' type='text' name='fold' value='3'/>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                     </div>

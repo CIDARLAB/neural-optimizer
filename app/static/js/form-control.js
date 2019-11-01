@@ -90,7 +90,7 @@ function validityForm() {
         alert(str);
         event.preventDefault();
     }
-    else if (tune == 1 && fold > 3) {
+    else if (tune == 0 && fold > 3) {
         var proceed = confirm('Entering fold > 3 requires longer time to finish the hyper-parameter tuning! Do you still want to proceed?');
         if (!proceed) {
             event.preventDefault();
