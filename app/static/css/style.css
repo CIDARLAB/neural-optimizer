@@ -369,5 +369,24 @@ h3, h4 {
 
 h5 {
     padding: 20px 0px 20px 0px;
+}
 
+.tt_container:hover .tt_info {
+    display: block;
+}
+.tt_container {
+    cursor: pointer;
+}
+.tt_info {
+    display: none;
+    background: #464646;
+    position: absolute;
+    z-index: 99;
+    width: 250px;
+    margin : 10px 0px 0px -250px;
+    padding: 7px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+    color: #f1f1f1;
 }

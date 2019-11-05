@@ -17,6 +17,13 @@
                 <div class="col-md-6 col-sm-12 col-xs-12">{{ value }}</div>
             </div>
             {% endfor %}
+            <div class="spacer"></div>
+            <br/>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <img height="30px" style="cursor:pointer" id="open_in_3duf_button" src="{{ url_for('static', filename='img/open-in-3duf-button.png') }}"/>
+                </div>
+            </div>
             <h5>Predicted performance</h5>
             {% for key, value in perform.items() %}
             <div class="row">

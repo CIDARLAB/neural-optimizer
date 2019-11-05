@@ -2,7 +2,6 @@
 <html lang=en>
     
     <head>
-        {% block head %}
         <title>:: DAFD ::</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,12 +10,6 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fullpage.css') }}"/>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/slider.css') }}"/>
-        {% endblock %}
-        <script>
-                $(document).ready(function(){
-                  $('[data-toggle="tooltip"]').tooltip(); 
-                });
-                </script>
     </head>
     
     <body>
@@ -35,7 +28,8 @@
             </nav>
         </div>
         <div class="right-content" id="fullpage">
-            {% block content %}{% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
     </body>
     
@@ -59,6 +53,25 @@
 			navigation:true,
             scrollOverflow: true
         });
+    </script>
+    <script src="{{ url_for('static', filename='js/bundle.js') }}"></script>
+    <script>
+        window.onload = function() {
+            var button = document.getElementById("open_in_3duf_button");
+            button.onclick = function() {
+                //TODO: Put the individual parameter information here
+                var params = {
+                    "orificeSize": 700,
+                    "orificeLength": 300,
+                    "oilInputWidth": 500,
+                    "waterInputWidth": 200,
+                    "outputWidth": 1500,
+                    "outputLength": 5000,
+                    "height": 100
+                };
+                ThreeDuFPlugin.openDesignWithDAFDParams(params);
+            }
+        }
     </script>
     {% block add_script %}{% endblock %}
  </html>

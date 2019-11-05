@@ -29,6 +29,7 @@ from keras.wrappers.scikit_learn import KerasClassifier, KerasRegressor
 from app.mod_NN.models import createClassifier, createRegressor
 
 from keras import backend as K
+from keras.callbacks import EarlyStopping
 
 from app.mod_dafd.DAFD_CMD import runDAFD
 
@@ -155,6 +156,7 @@ def makeDataset(df, target):
 def runNN(payload, tuning_params):
 
 	K.clear_session()
+	es = EarlyStopping(monitor=('val_loss'), mode='min', verbose=1)
 
 	model = None
 	best_config = None
@@ -173,7 +175,7 @@ def runNN(payload, tuning_params):
 						epochs=tuning_params['epochs'],
 						num_hidden=tuning_params['num_hidden'],
 						node_hidden=tuning_params['node_hidden'],
-						act_hidden='relu', act_output='sigmoid')
+						act_hidden='relu', act_output='sigmoid', callbacks=[es])
 		elif payload['mode']=='regression':
 			model = KerasRegressor(build_fn=createRegressor, 
 						loss_func='mean_squared_error', opt_func='adam', 
@@ -181,7 +183,7 @@ def runNN(payload, tuning_params):
 						epochs=tuning_params['epochs'],
 						num_hidden=tuning_params['num_hidden'],
 						node_hidden=tuning_params['node_hidden'],
-						act_hidden='relu', act_output='linear')
+						act_hidden='relu', act_output='linear', callbacks=[es])
 	
 	'''Preparing dataset and pipeline'''
 	complete_filename = os.path.join(RESOURCES, payload['filename'])
@@ -249,6 +251,7 @@ def runNN(payload, tuning_params):
 			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
 
 	elif payload['tuning'] == 'none' and payload['validation'] == 'holdout':
+
 		#exe = pipeline
 		start = datetime.now()
 		pipeline.fit(X_train, y_train)
