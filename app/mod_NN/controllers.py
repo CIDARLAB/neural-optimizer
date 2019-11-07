@@ -35,6 +35,16 @@ from app.mod_dafd.DAFD_CMD import runDAFD
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
+METRICS_MAP = {
+	'accuracy': 'Accuracy',
+	'precision': 'Precision',
+	'recall': 'Recall',
+	'f1': 'F1 Score',
+	'roc_auc': 'ROC-AUC',
+	'neg_mean_squared_error': 'MSE',
+	'neg_mean_absolute_error': 'MAE',
+	'r2': 'R-squared'
+}
 
 def validFile(filename):
 
@@ -80,6 +90,45 @@ def getDataType(filename):
 
 	return df3
 
+def getScore(mode, name, metrics, test, pred, prob, xval, tuned):
+
+	if metrics == 'accuracy':
+		value = accuracy_score(test, pred)
+	elif metrics == 'precision':
+		value = precision_score(test, pred)
+	elif metrics == 'recall':
+		value = recall_score(test, pred)
+	elif metrics == 'f1':
+		value = f1_score(test, pred)
+	elif prob != None and metrics== 'roc_auc':
+		value = roc_auc_score(test, prob)
+
+	elif metrics == 'neg_mean_squared_error':
+		value = mean_squared_error(test, pred)
+	elif metrics == 'neg_mean_absolute_error':
+		value = mean_absolute_error(test, pred)
+	elif metrics == 'r2':
+		value = roc_auc_score(test, pred)
+	
+	return ({
+		'Mode': [mode.title()],
+		'Model Name': [name],
+		METRICS_MAP[metrics]: [value],
+		'Xval?': [xval],
+		'Tuned?': [tuned]
+	})
+
+def getScoreCV(mode, name, metrics, cv):
+
+	return ({
+		'Mode': [mode.title()],
+		'Model Name': [name],
+		METRICS_MAP[metrics]: [cv['test_' + metrics].mean()],
+		'Xval?': ['Yes'],
+		'Tuned?': ['No']
+	})
+
+'''
 def getClassificationScore(name, score, test, pred, prob):
 
 	acc, prec, rec, f1, roc = None, None, None, None, None
@@ -131,6 +180,7 @@ def getRegressionScore(name, score, pred, test):
 		'R-squared': r2
 	} 
 	return {k:[v] for k,v in score_dict.items() if v is not None}
+'''
 
 def generateParams(payload):
 
@@ -156,35 +206,10 @@ def makeDataset(df, target):
 def runNN(payload, tuning_params):
 
 	K.clear_session()
-	es = EarlyStopping(monitor=('val_loss'), mode='min', verbose=1)
 
 	model = None
 	best_config = None
 
-	'''Selecting the models'''
-	if payload['tuning']!='none':
-		if payload['mode']=='classification':
-			model = KerasClassifier(build_fn=createClassifier, loss_func='binary_crossentropy', opt_func='adam', act_hidden='relu', act_output='sigmoid')
-		elif payload['mode']=='regression':
-			model = KerasRegressor(build_fn=createRegressor, loss_func='mean_squared_error', opt_func='adam', act_hidden='relu', act_output='linear')
-	else:
-		if payload['mode']=='classification':
-			model = KerasClassifier(build_fn=createClassifier,
-						loss_func='binary_crossentropy', opt_func='adam', 
-						batch_size=tuning_params['batch_size'],
-						epochs=tuning_params['epochs'],
-						num_hidden=tuning_params['num_hidden'],
-						node_hidden=tuning_params['node_hidden'],
-						act_hidden='relu', act_output='sigmoid', callbacks=[es])
-		elif payload['mode']=='regression':
-			model = KerasRegressor(build_fn=createRegressor, 
-						loss_func='mean_squared_error', opt_func='adam', 
-						batch_size=tuning_params['batch_size'],
-						epochs=tuning_params['epochs'],
-						num_hidden=tuning_params['num_hidden'],
-						node_hidden=tuning_params['node_hidden'],
-						act_hidden='relu', act_output='linear', callbacks=[es])
-	
 	'''Preparing dataset and pipeline'''
 	complete_filename = os.path.join(RESOURCES, payload['filename'])
 	df = readFile(complete_filename)
@@ -201,17 +226,21 @@ def runNN(payload, tuning_params):
 
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=float(payload['holdout']))
 
-	params.append(('mod', model))
-	pipeline = Pipeline(params)
-
-	'''Hyper-parameter tuning, cross-validation, or holdout methods'''
+	'''Selecting between hyperparameter tuning, cross-validation, or holdout methods'''
 	if payload['tuning'] != 'none':
-
+		if payload['mode']=='classification':
+			model = KerasClassifier(build_fn=createClassifier, loss_func='binary_crossentropy', opt_func='adam', act_hidden='relu', act_output='sigmoid')
+		elif payload['mode']=='regression':
+			model = KerasRegressor(build_fn=createRegressor, loss_func='mean_squared_error', opt_func='adam', act_hidden='relu', act_output='linear')
+		
+		params.append(('mod', model))
+		pipeline = Pipeline(params)
+		
 		if payload['tuning'] == 'grid':
 			exe = GridSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
 		elif payload['tuning'] == 'random':
 			exe = RandomizedSearchCV(pipeline, tuning_params, cv=int(payload['fold']), n_jobs=-1, verbose=2)
-
+		
 		start = datetime.now()
 		exe.fit(X_train, y_train)
 		end = datetime.now()
@@ -228,15 +257,19 @@ def runNN(payload, tuning_params):
 		print('Best config:', best_params)
 
 		y_pred = exe.best_estimator_.predict(X_test)
+		y_prob = None
 		if payload['mode']=='classification':
 			y_prob = exe.best_estimator_.predict_proba(X_test)[:, 1]
 		
-		if payload['save-best-config']:
-			json_str = json.dumps(exe.best_params_)
-			best_config_json = os.path.join(RESOURCES, payload['best-config-file'])
-			with open(best_config_json, 'w') as json_file:
-				json_file.write(json_str)
-
+		##subject to change
+		'''
+		if (payload['mode']=='classification'):
+			results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
+		elif (payload['mode']=='regression'):
+			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
+		'''
+		results = getScore(payload['mode'], payload['model-name'], payload['metrics'], y_test, y_pred, y_prob, 'Yes', 'Yes')
+		
 		model_saver = exe.best_estimator_['mod'].model
 		best_config = {
             'Batch-size': best_params['mod__batch_size'],
@@ -244,24 +277,56 @@ def runNN(payload, tuning_params):
             'Number of hidden layers': best_params['mod__num_hidden'],
             'Number of nodes per layer': best_params['mod__node_hidden']
         }
+		
+		if payload['save-best-config']:
+			json_str = json.dumps(exe.best_params_)
+			best_config_json = os.path.join(RESOURCES, payload['best-config-file'])
+			with open(best_config_json, 'w') as json_file:
+				json_file.write(json_str)
 
-		if (payload['mode']=='classification'):
-			results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
-		elif (payload['mode']=='regression'):
-			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
 
 	elif payload['tuning'] == 'none' and payload['validation'] == 'holdout':
 
-		#exe = pipeline
+		es = EarlyStopping(monitor=('loss'), mode='min', verbose=1)
+		if payload['mode']=='classification':
+			model = KerasClassifier(build_fn=createClassifier,
+						loss_func='binary_crossentropy', opt_func='adam', 
+						batch_size=tuning_params['batch_size'],
+						epochs=tuning_params['epochs'],
+						num_hidden=tuning_params['num_hidden'],
+						node_hidden=tuning_params['node_hidden'],
+						act_hidden='relu', act_output='sigmoid', callbacks=[es])
+		elif payload['mode']=='regression':
+			model = KerasRegressor(build_fn=createRegressor, 
+						loss_func='mean_squared_error', opt_func='adam', 
+						batch_size=tuning_params['batch_size'],
+						epochs=tuning_params['epochs'],
+						num_hidden=tuning_params['num_hidden'],
+						node_hidden=tuning_params['node_hidden'],
+						act_hidden='relu', act_output='linear', callbacks=[es])
+
+		params.append(('mod', model))
+		pipeline = Pipeline(params)
+
 		start = datetime.now()
 		pipeline.fit(X_train, y_train)
 		end = datetime.now()
 		print('Total execution time:', str(end-start))
 
 		y_pred = pipeline.predict(X_test)
+		y_prob = None
 		if payload['mode']=='classification':
 			y_prob = pipeline.predict_proba(X_test)[:, 1]
-			
+		
+		##subject to change
+		'''
+		if (payload['mode']=='classification'):
+			results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
+		elif (payload['mode']=='regression'):
+			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
+		'''
+		results = getScore(payload['mode'], payload['model-name'], payload['metrics'], y_test, y_pred, y_prob, 'No', 'No')
+
 		model_saver = pipeline.named_steps['mod'].model
 		best_config = {
             'Batch-size': tuning_params['batch_size'],
@@ -269,33 +334,66 @@ def runNN(payload, tuning_params):
             'Number of hidden layers': tuning_params['num_hidden'],
             'Number of nodes per layer': tuning_params['node_hidden']
         }
-		if (payload['mode']=='classification'):
-			results = getClassificationScore(payload['model-name'], payload['metrics'], y_test, y_pred, y_prob)
-		elif (payload['mode']=='regression'):
-			results = getRegressionScore(payload['model-name'], payload['metrics'], y_test, y_pred)
-
 
 	elif payload['tuning'] == 'none' and payload['validation'] == 'crossval':
 
+		if payload['mode']=='classification':
+			model = KerasClassifier(build_fn=createClassifier,
+						loss_func='binary_crossentropy', opt_func='adam', 
+						batch_size=tuning_params['batch_size'],
+						epochs=tuning_params['epochs'],
+						num_hidden=tuning_params['num_hidden'],
+						node_hidden=tuning_params['node_hidden'],
+						act_hidden='relu', act_output='sigmoid')
+		elif payload['mode']=='regression':
+			model = KerasRegressor(build_fn=createRegressor, 
+						loss_func='mean_squared_error', opt_func='adam', 
+						batch_size=tuning_params['batch_size'],
+						epochs=tuning_params['epochs'],
+						num_hidden=tuning_params['num_hidden'],
+						node_hidden=tuning_params['node_hidden'],
+						act_hidden='relu', act_output='linear')
+
+		params.append(('mod', model))
+		pipeline = Pipeline(params)
+
+		'''
 		if payload['metrics'] == 'mse':
 			scoring = ['neg_mean_squared_error']
 		elif payload['metrics'] == 'mae':
 			scoring = ['neg_mean_absolute_error']
 		else:
 			scoring = [payload['metrics']]
+		'''
 
 		start = datetime.now()
-		res = cross_validate(estimator=pipeline, X=X_train, y=y_train, cv=int(payload['fold']), scoring=scoring)
+		res = cross_validate(estimator=pipeline, X=X_train, y=y_train, cv=int(payload['fold']), scoring=[payload['metrics']])
 		end = datetime.now()
 		print('Total execution time:', str(end-start))
 
+		'''
 		res_dict = {}
 		res_dict['Model Name'] = payload['model-name']
-		for score in scoring:
-			key = 'test_' + score
+		#for score in [payload['metrics']]:
+		key = 'test_' + payload['metrics']
 		res_dict[key] = res[key].mean()
 
 		print(res_dict)
+		'''
+		results = getScoreCV(payload['mode'], payload['model-name'], payload['metrics'], res)
+
+		start = datetime.now()
+		pipeline.fit(X_train, y_train)
+		end = datetime.now()
+		print('Total execution time:', str(end-start))
+
+		model_saver = pipeline.named_steps['mod'].model
+		best_config = {
+            'Batch-size': tuning_params['batch_size'],
+            'Epoch': tuning_params['epochs'],
+            'Number of hidden layers': tuning_params['num_hidden'],
+            'Number of nodes per layer': tuning_params['node_hidden']
+        }
 	
 	if (payload['save-architecture']):
 		architecture = os.path.join(RESOURCES, payload['architecture-file'])

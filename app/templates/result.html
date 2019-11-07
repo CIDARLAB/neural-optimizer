@@ -16,8 +16,8 @@
                         {% for column in columns %}
                             <th>{{ column }}</th>
                         {% endfor %}
-                        <th>X-val?</th>
-                        <th>Tuned?</th>
+                        <!--<th>X-val?</th>
+                        <th>Tuned?</th>-->
                     </tr>
                     {% for row in data %}
                     <tr>
@@ -30,8 +30,8 @@
                         {% for col in row %}
                             <td>{{ col }}</td>
                         {% endfor %}
-                        <td>{{ crossval }}</td>
-                        <td>{{ hyperparam }}</td>
+                        <!--<td>{{ crossval }}</td>
+                        <td>{{ hyperparam }}</td>-->
                     </tr>
                     {% endfor %}
                 </table>
