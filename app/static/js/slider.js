@@ -1,9 +1,13 @@
-function updateIntInput(val, name) {
-    document.getElementById(name).value = val; 
+function updateIntInput(val, name, slider) {
+    document.getElementById(name).value = val;
+    document.getElementById(slider).classList.add('slider-activated');
+    document.getElementById(slider).classList.remove('slider-warning');
 }
 
-function updateFloatInput(val, name) {
-    document.getElementById(name).value = val/100; 
+function updateFloatInput(val, name, slider) {
+    document.getElementById(name).value = val/100;
+    document.getElementById(slider).classList.add('slider-activated');
+    document.getElementById(slider).classList.remove('slider-warning');
 }
 
 function updateIntSlider(slider, text) {
@@ -13,17 +17,33 @@ function updateIntSlider(slider, text) {
 
 function intSliderChange(slider, text, min, max) {
     var val = document.getElementById(text).value
-    if(val < min) {
-        alert('Please enter a value bigger than ' + min);
+    if(isNaN(val) || val < 0) {
+        alert('Please enter a valid and a positive number');
+        document.getElementById(slider).classList.add('slider-activated');
+        document.getElementById(slider).classList.remove('slider-warning');
         val = min;
     }
-    if(val > max) {
-        alert('Please enter a value smaller than ' + max);
-        val = max;
+    else if(val < min) {
+        if (confirm('You are entering out of range value. Do you want to proceed?')) {
+            document.getElementById(slider).classList.add('slider-warning');
+            document.getElementById(slider).classList.remove('slider-activated');
+        }
+        else {
+            val = min;
+        }
     }
-    if(typeof val != 'number') {
-        alert('Please enter a valid number');
-        val = min;
+    else if(val > max) {
+        if (confirm('You are entering out of range value. Do you want to proceed?')) {
+            document.getElementById(slider).classList.add('slider-warning');
+            document.getElementById(slider).classList.remove('slider-activated');
+        }
+        else {
+            val = max;
+        }
+    }
+    else if(val >= min && val <= max) {
+        document.getElementById(slider).classList.add('slider-activated');
+        document.getElementById(slider).classList.remove('slider-warning');
     }
     document.getElementById(slider).value = val;
     document.getElementById(text).value = val;
@@ -36,17 +56,33 @@ function updateFloatSlider(slider, text) {
 
 function floatSliderChange(slider, text, min, max) {
     var val = document.getElementById(text).value * 100;
-    if(val < min) {
-        alert('Please enter a value bigger than ' + (min/100));
+    if(isNaN(val) || val < 0) {
+        alert('Please enter a valid and a positive number');
+        document.getElementById(slider).classList.add('slider-activated');
+        document.getElementById(slider).classList.remove('slider-warning');
         val = min;
     }
-    if(val > max) {
-        alert('Please enter a value smaller than ' + (max/100));
-        val = max;
+    else if(val < min) {
+        if (confirm('You are entering out of range value. Do you want to proceed?')) {
+            document.getElementById(slider).classList.add('slider-warning');
+            document.getElementById(slider).classList.remove('slider-activated');
+        }
+        else {
+            val = min;
+        }
     }
-    if(typeof val != 'number') {
-        alert('Please enter a valid number');
-        val = min;
+    else if(val > max) {
+        if (confirm('You are entering out of range value. Do you want to proceed?')) {
+            document.getElementById(slider).classList.add('slider-warning');
+            document.getElementById(slider).classList.remove('slider-activated');
+        }
+        else {
+            val = max;
+        }
+    }
+    else if(val >= min && val <= max) {
+        document.getElementById(slider).classList.add('slider-activated');
+        document.getElementById(slider).classList.remove('slider-warning');
     }
     document.getElementById(slider).value = val;
     document.getElementById(text).value = val/100;
