@@ -54,24 +54,5 @@
             scrollOverflow: true
         });
     </script>
-    <script src="{{ url_for('static', filename='js/bundle.js') }}"></script>
-    <script>
-        window.onload = function() {
-            var button = document.getElementById("open_in_3duf_button");
-            button.onclick = function() {
-                //TODO: Put the individual parameter information here
-                var params = {
-                    "orificeSize": 700,
-                    "orificeLength": 300,
-                    "oilInputWidth": 500,
-                    "waterInputWidth": 200,
-                    "outputWidth": 1500,
-                    "outputLength": 5000,
-                    "height": 100
-                };
-                ThreeDuFPlugin.openDesignWithDAFDParams(params);
-            }
-        }
-    </script>
     {% block add_script %}{% endblock %}
  </html>

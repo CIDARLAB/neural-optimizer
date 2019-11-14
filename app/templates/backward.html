@@ -76,3 +76,27 @@
 </div>
 <!-- /page content -->
 {% endblock %}
+
+
+{% block add_script %}
+
+<script src="{{ url_for('static', filename='js/bundle.js') }}"></script>
+<script>
+    window.onload = function() {
+        var button = document.getElementById("open_in_3duf_button");
+        button.onclick = function() {
+            //TODO: Put the individual parameter information here
+            var params = {
+                "orificeSize": {{ geo['Orifice Width (\u03BCm)'] }},
+                "orificeLength": {{ geo['Orifice Length (\u03BCm)'] }},
+                "oilInputWidth": {{ geo['Oil Inlet Width (\u03BCm)'] }},
+                "waterInputWidth": {{ geo['Water Inlet Width (\u03BCm)'] }},
+                "outputWidth": {{ geo['Outlet Channel Width (\u03BCm)'] }},
+                "outputLength": 5000,
+                "height": {{ geo['Channel Depth (\u03BCm)'] }}
+            };
+            ThreeDuFPlugin.openDesignWithDAFDParams(params);
+        }
+    }
+</script>
+{% endblock %}

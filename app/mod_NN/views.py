@@ -263,3 +263,48 @@ def download():
     
     return redirect(url_for('nn.index'))
 
+
+@nn_blueprint.route("/initial-learning", methods=['GET', 'POST'])
+def initial_learning():
+	
+	return render_template('initial-learning.html')
+
+@nn_blueprint.route("/transfer-learning", methods=['GET', 'POST'])
+def transfer_learning():
+	
+	return render_template('transfer-learning.html')
+
+@nn_blueprint.route("/analysis-transfer", methods=['GET', 'POST'])
+def analysis_transfer():
+	
+    if request.method == 'POST':
+        
+        file = request.files['file']
+
+        if not file:
+            return "ERROR"
+        
+        if validFile(file.filename):
+
+            target = os.path.join(APP_ROOT, '../resources/inputs/')
+            filename = file.filename
+            complete_filename = os.path.join(target, secure_filename(filename))
+
+            file.save(complete_filename)
+
+        df = getDataType(complete_filename)
+        df = df.round(3)
+        columns = df.columns.tolist()
+
+        model_name = 'model-NN-' + str(int(round(time.time() * 1000)))
+        
+        return render_template('analysis-transfer.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
+
+    return redirect(url_for('nn.index'))
+
+@nn_blueprint.route("/run-transfer", methods=['GET', 'POST'])
+def run_transfer():
+	
+    return redirect(url_for('nn.index'))
+
+
