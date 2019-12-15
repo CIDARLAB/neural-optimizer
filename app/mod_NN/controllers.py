@@ -205,7 +205,8 @@ def makeDataset(df, target):
 
 def runNN(payload, tuning_params):
 
-	K.clear_session()
+	if K.backend() == 'tensorflow':
+		K.clear_session()
 
 	model = None
 	best_config = None

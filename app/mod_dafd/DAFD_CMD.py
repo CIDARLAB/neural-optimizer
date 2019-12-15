@@ -7,7 +7,8 @@ from keras import backend as K
 
 def runDAFD():
 
-	K.clear_session()
+	if K.backend() == 'tensorflow':
+		K.clear_session()
 
 	di = DAFD_Interface()
 
