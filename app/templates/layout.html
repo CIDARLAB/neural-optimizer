@@ -40,19 +40,5 @@
     <script src="{{ url_for('static', filename='js/scrolloverflow.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/form-control.js') }}"></script>
 
-    <script type="text/javascript">
-        //NN optimizer submission
-        document.getElementById("train-data").onchange = function() {
-            document.getElementById("train-form").submit();
-        };
-
-        var myFullpage = new fullpage('#fullpage', {
-            //sectionsColor: ['#f2f2f2', '#8399a0', '#8399a0', '#b7d16a'],
-            //slidesNavigation: true,
-			anchors: ['home', 'designAutomation', 'performancePrediction', 'neuralOptimizer'],
-			navigation:true,
-            scrollOverflow: true
-        });
-    </script>
     {% block add_script %}{% endblock %}
  </html>

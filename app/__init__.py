@@ -1,9 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import os
+from config import CONFIG, REDIS
 from werkzeug.utils import secure_filename
 
+from make_celery import make_celery
+
 app = Flask(__name__)
-app.secret_key = "1234567890"
+app.secret_key = CONFIG['secret_key']
+domain = CONFIG['domain']
+
+app.config.update(
+    CELERY_BROKER_URL=REDIS['broker'],
+    CELERY_RESULT_BACKEND=REDIS['backend']
+)
+celery = make_celery(app)
 
 from app.mod_NN.views import nn_blueprint
 app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
@@ -13,7 +23,13 @@ app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
 @app.route("/index")
 def index():
 	
-	return redirect(url_for('nn.index'))
+    return render_template('index.html')
+
+@app.route("/backtohome")
+def backtohome():
+	
+    return redirect(domain)
+
 
 @app.route("/low_cost.html")
 @app.route("/low_cost")
@@ -57,3 +73,16 @@ def publications():
 	
 	return render_template('publications.html')
 
+
+'''This part is for testing asynchronous worker'''
+@celery.task()
+def add_together(a, b):
+    return a + b
+
+@app.route("/celery-test")
+def celery_test():
+	
+	result = add_together.delay(10, 20)
+	print(result.wait())
+	
+	return 'Welcome to the celery test!'

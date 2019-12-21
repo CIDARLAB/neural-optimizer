@@ -15,7 +15,7 @@ from app.mod_NN.controllers import validFile, getDataType, runNN, runForward, ru
 @nn_blueprint.route('/index.html')
 def index():
 
-    return render_template('index.html')
+    return redirect(url_for('index'))
 
 @nn_blueprint.route('/dummy', methods=['GET', 'POST'])
 def dummy():
@@ -58,7 +58,7 @@ def analysis():
         
         return render_template('analysis.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
 
-    return redirect(url_for('nn.index'))
+    return redirect(url_for('index'))
 
 @nn_blueprint.route('/run', methods=['GET', 'POST'])
 def run():
@@ -152,7 +152,8 @@ def run():
         
         return render_template('result.html', columns=cols, data=vals, architecture=config)
         
-    return redirect(url_for('nn.index'))
+    return redirect(url_for('index'))
+
 
 @nn_blueprint.route('/forward', methods=['GET', 'POST'])
 def forward():
@@ -194,8 +195,7 @@ def forward():
 
         return render_template('forward.html', perform=perform, values=values, forward2=forward2)
 
-    return redirect(url_for('nn.index'))
-
+    return redirect(url_for('index'))
 
 @nn_blueprint.route('/backward', methods=['GET', 'POST'])
 def backward():
@@ -251,7 +251,8 @@ def backward():
         return render_template('backward.html', geo=geo, flow=flow, opt=opt, perform=perform, flowrate=flowrate,
                                 gen_rate=gen_rate, flow_rate=flow_rate)
 
-    return redirect(url_for('nn.index'))
+    return redirect(url_for('index'))
+
 
 @nn_blueprint.route('/download', methods=['GET', 'POST'])
 def download():
@@ -261,9 +262,9 @@ def download():
         directory = os.path.join(APP_ROOT, '../resources/inputs/')
         return send_from_directory(directory=directory, filename='weights-classification.h5', as_attachment=True)
     
-    return redirect(url_for('nn.index'))
+    return redirect(url_for('index'))
 
-
+'''
 @nn_blueprint.route("/initial-learning", methods=['GET', 'POST'])
 def initial_learning():
 	
@@ -300,11 +301,11 @@ def analysis_transfer():
         
         return render_template('analysis-transfer.html', columns=columns, data=df.values, filename=filename, model_name=model_name)
 
-    return redirect(url_for('nn.index'))
+    return redirect(url_for('index'))
 
 @nn_blueprint.route("/run-transfer", methods=['GET', 'POST'])
 def run_transfer():
 	
-    return redirect(url_for('nn.index'))
-
+    return redirect(url_for('index'))
+'''
 
