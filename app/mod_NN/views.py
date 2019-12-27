@@ -264,6 +264,15 @@ def download():
     
     return redirect(url_for('index'))
 
+
+@nn_blueprint.route('/example', methods=['GET'])
+def example():
+
+    print('GOT HERE')
+    directory = os.path.join(APP_ROOT, '../resources/inputs/')
+    return send_from_directory(directory=directory, filename='dafd.csv', as_attachment=True)
+
+
 '''
 @nn_blueprint.route("/initial-learning", methods=['GET', 'POST'])
 def initial_learning():

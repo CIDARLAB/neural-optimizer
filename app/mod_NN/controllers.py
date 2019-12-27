@@ -114,8 +114,8 @@ def getScore(mode, name, metrics, test, pred, prob, xval, tuned):
 		'Mode': [mode.title()],
 		'Model Name': [name],
 		METRICS_MAP[metrics]: [value],
-		'Xval?': [xval],
-		'Tuned?': [tuned]
+		'Cross-Validated': [xval],
+		'Hyperparameter-Tuned': [tuned]
 	})
 
 def getScoreCV(mode, name, metrics, cv):
@@ -124,8 +124,8 @@ def getScoreCV(mode, name, metrics, cv):
 		'Mode': [mode.title()],
 		'Model Name': [name],
 		METRICS_MAP[metrics]: [cv['test_' + metrics].mean()],
-		'Xval?': ['Yes'],
-		'Tuned?': ['No']
+		'Cross-Validated': ['Yes'],
+		'Hyperparameter-Tuned': ['No']
 	})
 
 '''

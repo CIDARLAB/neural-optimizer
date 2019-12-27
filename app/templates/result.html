@@ -12,7 +12,7 @@
                 <div class="spacer"></div>
                 <table class="overview-table table table-condensed">
                     <tr>
-                        <th>Selection</th>
+                        <!--<th>Selection</th>-->
                         {% for column in columns %}
                             <th>{{ column }}</th>
                         {% endfor %}
@@ -21,12 +21,12 @@
                     </tr>
                     {% for row in data %}
                     <tr>
-                        <td>
-                            <!--<input type='hidden' name='model' value='{{row[0]}}'/>
+                        <!--<td>
+                            <input type='hidden' name='model' value='{{row[0]}}'/>
                             <input type='submit' name='details_{{ loop.index }}' value='See details' class="btn btn-success"/>-->
-                            <input type='checkbox' name='selection' value={{row[1]}}/>
-                            <!--<a href="/neural-net/generate_api"><input type="button" name='api' value='Generate API' class="btn btn-info"/></a>-->
-                        </td>
+                            <!--<input type='checkbox' name='selection' value={{row[1]}}/>-->
+                            <!--<a href="/neural-net/generate_api"><input type="button" name='api' value='Generate API' class="btn btn-info"/></a>
+                        </td>-->
                         {% for col in row %}
                             <td>{{ col }}</td>
                         {% endfor %}

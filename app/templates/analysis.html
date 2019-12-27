@@ -7,6 +7,11 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <h3>Data Summary</h3>
+                <ul>
+                    <li>Select the target variable. This is the variable that is going to be predicted by the model.</li>
+                    <li>Define the type of learning: Classification for a discrete target variable, or Regression for a continuous target variable.</li>
+                    <li>Rename the model if necessary, otherwise leave as it is.</li>
+                </ul>
                 <div class="row">
                     <div class="col-md-6 col-sm-12 col-xs-12">
                         <label><b>Dataset name:</b></label>
@@ -42,6 +47,17 @@
                 <input type='submit' name='submit' value='Regression' class="btn btn-success run"/>-->
                 
                 <label><b>Data overview:</b></label>
+                <ul>
+                    <li>Check any variables that are to be removed.</li>
+                    <li>The target variable will be automatically removed even if it is not checked.</li>
+                    <li>Below are several tips on removing unnecessary variables:
+                        <ul>
+                            <li>Variables with unique values equal to the number of entries do not add any value to the model, and so does variables with a single or zero unique value.</li>
+                            <li>Non-numeric variables are also not currently supported, so please remove them.</li>
+                            <li>Empty columns typically appears with 'Unnamed: x' name. Please remove them as well.</li>
+                        </ul>
+                    </li>
+                </ul>
                 <table id="summary" class="overview-table table table-condensed">
                     <tr>
                         <!--<th>target variable</th>-->
@@ -90,7 +106,7 @@
                         </select>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Select the performance metrics to evaluate the model.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -113,7 +129,7 @@
                         </select>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">The normalization method: Min-Max (rescale the data to the range of 0-1), Standard (rescale the data to make mean=0, and std=1), or Robust (use the interquartile range to normalize the data).</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -127,7 +143,7 @@
                         <input class='form-standard form-text' type='text' id='holdout' name='holdout' value='20'/>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">The percentage of data used as the final evaluation set (excluded from the training set).</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -149,11 +165,11 @@
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <select id='cv_select' class='form-standard' name='validation' onChange="activateFold()">
                             <option value='crossval' selected>Cross Validation</option>
-                            <option value='holdout'>Train and Holdout</option>
+                            <option value='holdout'>Train-Holdout</option>
                         </select>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">With cross validation, the data is splitted into k-folds, and trained k times. With train-holdout, model is only trained and evaluated once using the holdout set.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -163,7 +179,7 @@
                         <input id='fold_text' class='form-standard form-text' type='text' name='fold' value='3'/>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">The number of folds for cross validation. Will be ignored for train-holdout validation.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -180,7 +196,7 @@
                         </select>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Hyperparameter optimization. Grid Search exhaustively searches through the entire combination of parameters, while Random Search only tries a fixed number of random parameter combinations.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -193,7 +209,7 @@
                         <input class='form-standard form-text' id='reqParam1' type='text' name='epoch' value='100'/>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">The number of complete passes through the training dataset. The bigger the better, but at cost of slower running time.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -203,7 +219,7 @@
                         <input class='form-standard form-text' id='reqParam2' type='text' name='batch' value='1'/>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info"> The number of samples processed before the model is updated, which has to be less than or equal to the training data size.  The smaller the better, but at cost of slower running time.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -213,7 +229,7 @@
                         <input class='form-standard form-text' id='reqParam3' type='text' name='num_layers' value='4'/>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Number of hidden layers that constitute the neural network.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
@@ -223,16 +239,16 @@
                         <input class='form-standard form-text' id='reqParam4' type='text' name='num_nodes' value='8'/>
                     </div>
                     <div class="col-md-1 text-center">
-                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Some tooltip info...</span></div>
+                        <div class="tt_container"><i class="fa fa-question-circle fa-lg"></i><span class="tt_info">Number of nodes for each hidden layer that constitute the neural network.</span></div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12"></div>
                 </div>
                 <div class="spacer"></div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <input type="checkbox" class="flat" name='contribute' value='agree' checked="checked"/>   <span class='subtext'>I agree to contribute my data to the community. Opt out if you do not wish to share your data.</span>
                     </div>
-                </div>
+                </div>-->
                 <div class="spacer"></div>
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">

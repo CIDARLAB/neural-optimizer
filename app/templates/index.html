@@ -5,9 +5,16 @@
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
+			<h6>Train Your Neural Network</h6><br/>
+			<ul>
+				<li>Upload your dataset using the following uploader box.</li>
+				<li>The tool accepts a csv file containing data in tabular format, with the first row represents the variables/features names. The remaining rows represent the entries for the dataset.</li>
+				<li>Please include the target variable into one of the columns.</li>
+				<li>Please do not leave any empty rows or columns. Empty rows may cause some error, while empty columns can be removed in further steps (not advisable).</li>
+				<li>Please refer to <a href="{{ url_for('nn.example') }}">this dataset</a> for an example of the accepted format.</li>
+			</ul>
 			<form action="{{ url_for('nn.analysis') }}" id="train-form" method="post" enctype="multipart/form-data">
 				<div class="form-group files">
-					<h6>Train Your Neural Network</h6>
 					<input id="train-data" name="file" type="file" class="form-control" multiple="" onchange=""/>
 				</div>
 			</form>
