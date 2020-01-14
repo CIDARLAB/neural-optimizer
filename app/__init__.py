@@ -34,11 +34,11 @@ def backtohome():
     return redirect(domain)
 
 
-@app.route("/low_cost.html")
-@app.route("/low_cost")
-def low_cost():
+@app.route("/information.html")
+@app.route("/information")
+def information():
 	
-	return redirect(domain + '/low_cost')
+	return redirect(domain + '/information')
 	#return render_template('low-cost.html')
 
 @app.route("/droplet_based.html")
@@ -55,11 +55,11 @@ def single_cell():
 	return redirect(domain + '/single_cell')
 	#return render_template('single-cell.html')
 
-@app.route("/tips.html")
-@app.route("/tips")
-def tips():
+@app.route("/tutorial.html")
+@app.route("/tutorial")
+def tutorial():
 	
-	return redirect(domain + '/tips')
+	return redirect(domain + '/tutorial')
 	#return render_template('tips.html')
 
 @app.route("/team.html")
