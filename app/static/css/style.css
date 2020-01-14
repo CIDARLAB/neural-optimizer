@@ -95,8 +95,9 @@ body {
 }
 
 .img-stakeholders {
-    height: 60px;
+    height: 40px;
     padding: 5px;
+    cursor: pointer;
 }
 
 .banner {
@@ -121,6 +122,14 @@ body {
     padding: 20px 0 0 0;
     top: 0px;
 }
+.logo-footer {
+    padding: 12px;
+}
+.copyright {
+    font-size: 11px;
+    color: black;
+}
+
 
 /* BUTTON */
 .btn-holder {
