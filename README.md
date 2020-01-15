@@ -22,6 +22,6 @@ For local usage, the tool can be run with the following command:
 venv/bin/python3 app_local.py
 ```
 
-The local server will run at http://localhost:1234. You can change the running port from app_local.py and specify the intended port.
+The local server will run at http://localhost:5000. You can change the running port from app_local.py and specify the intended port.
 
 The current Neural Optimizer version only supports .csv files. Please find some example of the acceptable format from http://dafdcad.org/download.html
