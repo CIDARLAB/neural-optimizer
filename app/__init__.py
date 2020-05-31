@@ -18,7 +18,9 @@ celery = make_celery(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 from app.mod_NN.views import nn_blueprint
+from app.mod_tl.views import tl_blueprint
 app.register_blueprint(nn_blueprint, url_prefix='/neural-net')
+app.register_blueprint(tl_blueprint, url_prefix='/transfer-learning')
 
 @app.route("/")
 @app.route("/index.html")
@@ -32,7 +34,6 @@ def index():
 def backtohome():
 	
     return redirect(domain)
-
 
 @app.route("/information.html")
 @app.route("/information")
@@ -126,7 +127,6 @@ def dataset6():
 	
     directory = os.path.join(APP_ROOT, './resources/inputs/')
     return send_from_directory(directory=directory, filename='example-dataset-06.csv', as_attachment=True)
-
 
 '''This part is for testing asynchronous worker'''
 @celery.task()

@@ -184,10 +184,8 @@ body {
 .btn-1 {
     font-size: 14px;
     background: #429993;
-    width: 150px;
+    width: 300px;
     height: 150px;
-    cursor: pointer;
-    border-radius: 50%;
     display: flex; 
     align-items: center;  /*Aligns vertically center */
     justify-content: center; /*Aligns horizontally center */
@@ -195,50 +193,13 @@ body {
     -moz-transition: all 0.3s;
     transition: all 0.3s;
 }
-.btn-1:hover {
-    background: #26484a;
-    color: #fff;
-}
-/*.btn-1:active {
-    background: #b7d16a;
-    top: 2px;
-}
-.btn-1:before {
-    position: absolute;
-    height: 100%;
-    left: 0;
-    top: 0;
-    font-size: 140%;
-    width: 60px;
-    line-height: 3;
-}*/
-
 .btn-2 {
-    font-size: 14px;
-    background: #b7d16a;
-    width: 150px;
-    height: 150px;
-    cursor: pointer;
-    border-radius: 50%;
-    display: flex; 
-    align-items: center;  /*Aligns vertically center */
-    justify-content: center; /*Aligns horizontally center */
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
-}
-.btn-2:hover {
-    background: #26484a;
-    color: #fff;
-}
-
-.btn-3 {
     font-size: 14px;
     background: #8399a0;
     width: 150px;
     height: 150px;
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 10%;
     display: flex; 
     align-items: center;  /*Aligns vertically center */
     justify-content: center; /*Aligns horizontally center */
@@ -247,7 +208,7 @@ body {
     transition: all 0.3s;
 }
 
-.btn-3:hover {
+.btn-2:hover {
     background: #26484a;
     color: #fff;
 }

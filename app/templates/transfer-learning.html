@@ -1,34 +1,111 @@
 {% extends "layout.html" %}
-  
+
 {%  block content %}
-<!-- page content -->
-<div class="container content-container">
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <h3>Upload Your Data - Transfer Learning</h3>
-            <br/>
-            <br/>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <form action="{{ url_for('nn.analysis_transfer') }}" id="form-transfer" method="post" enctype="multipart/form-data">
-                        <div class="form-group files">
-                            <input id="train-transfer" name="file" type="file" class="form-control" multiple="" onchange="uploadTransfer()"/>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-1"></div>
-            </div>
-        </div>
+<div class="section active" id="section-1">
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 text-center">
+			<div class="row md-spacer">
+				<div class="col-md-12">
+					<img src="{{ url_for('static', filename='img/dafd-logo-2.png') }}" width="300px"/>
+				</div>
+			</div>
+			<!--<div class="row md-spacer">
+				<div class="col-md-12">
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/>
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/>
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/BDC.png') }}"/>
+					<img class="img-stakeholders" src="{{ url_for('static', filename='img/BU.png') }}"/>
+				</div>
+			</div>-->
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<h3>Transfer Learning</h3>
+			<h6>Select the Pre-Trained Models</h6>
+		</div>
+		<div class="col-md-1"></div>
     </div>
+    <br/><br/>
+    <div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10 text-center">
+			<div class="row">
+				<div class="col-md-4"></div>
+				<div class="col-md-4">Droplet Diameter</div>
+				<div class="col-md-4">Generation Rate</div>
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+    <div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10 text-center">
+			<div class="row md-spacer">
+                <div class="col-md-4">
+                    <div class="btn-1" onclick="window.location.href=''">
+                        Disp. Phase: LB Bacterial Media<br/>Con. Phase: Mineral Oil<br/>Surfactant 5% Span 80
+                    </div>
+                </div>
+				<div class="col-md-2"><div class="btn-2" onclick="window.location.href='model11'">Dripping Regime</div></div>
+				<div class="col-md-2"><div class="btn-2" onclick="window.location.href='model12'">Jetting Regime</div></div>
+				<div class="col-md-2"><div class="btn-2" onclick="window.location.href='model21'">Dripping Regime</div></div>
+				<div class="col-md-2"><div class="btn-2" onclick="window.location.href='model22'">Jetting Regime</div></div>
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+
+	<br/>
+	<br/>
+	<br/>
+	<!--<div class="row logo-footer">
+		<div class="col-md-6">
+			<a href='http://cidarlab.org' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/logo-Cidar-Color-small.png') }}"/></a>
+			<a href='https://www.damplab.org' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/damp-lab-logo-2x_1.png') }}"/></a>
+			<a href='https://www.bu.edu/kilachandcenter/the-centers/biological-design-center/' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/BDC.png') }}"/></a>
+			<a href='https://www.bu.edu' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/BU.png') }}"/></a>
+		</div>
+		<div class="col-md-6 text-right">
+			<span class='copyright'>Copyright 2020, CIDAR Lab - All Rights Reserved.</span>
+			<a href='https://www.youtube.com/user/cidarlab' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/youtube.png') }}"/></a>
+			<a href='https://twitter.com/cidar_lab?lang=en' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/twitter.png') }}"/></a>
+			<a href='https://github.com/CIDARLAB/neural-optimizer' target="_blank"><img class="img-stakeholders" src="{{ url_for('static', filename='img/github.png') }}"/></a>
+		</div>
+	</div>-->
+
+	<!--<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div class="slider-container">
+				<div class="container" style="height: 400px;">
+					test
+				</div>
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>-->
 </div>
-<!-- /page content -->
+
 {% endblock %}
 
 {% block add_script %}
-<script>
-    function uploadTransfer() {
-        document.getElementById("form-transfer").submit();
-    }
-</script>
+	<script type="text/javascript">
+		document.getElementById("train-data").onchange = function() {
+			document.getElementById("train-form").submit();
+		};
+	
+		var myFullpage = new fullpage('#fullpage', {
+			//sectionsColor: ['#f2f2f2', '#8399a0', '#8399a0', '#b7d16a'],
+			//slidesNavigation: true,
+			anchors: ['home', 'designAutomation', 'performancePrediction'],
+			navigation:true,
+			scrollOverflow: true
+		});
+	</script>
+
 {% endblock %}
