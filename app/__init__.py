@@ -70,6 +70,14 @@ def team():
 	return redirect(domain + '/team')
 	#return render_template('team.html')
 
+@app.route("/udrop.html")
+@app.route("/udrop")
+def udrop():
+    return redirect(domain + '/udrop')
+	# return render_template('uDrop.html')
+
+
+
 @app.route("/collaborate.html")
 @app.route("/collaborate")
 def collaborate():
