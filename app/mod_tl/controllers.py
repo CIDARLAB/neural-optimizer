@@ -31,7 +31,10 @@ from app.mod_NN.models import createClassifier, createRegressor
 from keras import backend as K
 from keras.callbacks import EarlyStopping
 
-from app.mod_tl.TL_Regression_Load_Model_Y12 import execute_model
+from app.mod_tl.TL_Regression_Load_Model_Y11 import execute_model_11
+from app.mod_tl.TL_Regression_Load_Model_Y12 import execute_model_12
+from app.mod_tl.TL_Regression_Load_Model_Y21 import execute_model_21
+from app.mod_tl.TL_Regression_Load_Model_Y22 import execute_model_22
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/inputs/')
@@ -157,7 +160,15 @@ def runPretrained(filename, model_idx):
 	complete_filename = os.path.join(RESOURCES, filename)
 	df = readFile(complete_filename)
 
-	mae, mse, rmse, r2 = execute_model(df)
+	mae, mse, rmse, r2 = None, None, None, None
+	if model_idx == 'Generation rate - dripping regime':
+		mae, mse, rmse, r2 = execute_model_11(df)
+	elif model_idx == 'Droplet diameter - dripping regime':
+		mae, mse, rmse, r2 = execute_model_12(df)
+	elif model_idx == 'Generation rate - jetting regime':
+		mae, mse, rmse, r2 = execute_model_21(df)
+	elif model_idx == 'Droplet diameter - jetting regime':
+		mae, mse, rmse, r2 = execute_model_22(df)
 
 	return ({
 		'Mode': ['Regression'],

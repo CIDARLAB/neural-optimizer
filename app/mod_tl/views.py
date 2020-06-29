@@ -21,25 +21,25 @@ def index():
 @tl_blueprint.route("/model11")
 def model11():
 	
-    return render_template('index-transfer.html', model='Droplet diameter - dripping regime')
+    return render_template('index-transfer.html', model='Generation rate - dripping regime')
 
 @tl_blueprint.route("/model12.html")
 @tl_blueprint.route("/model12")
 def model12():
 	
-    return render_template('index-transfer.html', model='Droplet diameter - jetting regime')
+    return render_template('index-transfer.html', model='Droplet diameter - dripping regime')
 
 @tl_blueprint.route("/model21.html")
 @tl_blueprint.route("/model21")
 def model21():
 	
-    return render_template('index-transfer.html', model='Generation rate - dripping regime')
+    return render_template('index-transfer.html', model='Generation rate - jetting regime')
 
 @tl_blueprint.route("/model22.html")
 @tl_blueprint.route("/model22")
 def model22():
 	
-    return render_template('index-transfer.html', model='Generation rate - jetting regime')
+    return render_template('index-transfer.html', model='Droplet diameter - jetting regime')
 
 @tl_blueprint.route('/analysis-transfer', methods=['GET', 'POST'])
 def analysis():

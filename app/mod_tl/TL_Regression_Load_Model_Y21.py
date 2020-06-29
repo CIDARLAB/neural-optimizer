@@ -38,31 +38,64 @@ def r_square(y_obs, y_pred):
     SS_tot = backend.sum(backend.square(y_obs - backend.mean(y_obs))) 
     return (1 - SS_res/(SS_tot + backend.epsilon()))
 
+
 def mean_absolute_percentage_error(y_obs, y_pred): 
     #y_obs, y_pred = np.array(y_obs), np.array(y_pred)
     y_obs=y_obs.reshape(-1,1)
     #y_obs, y_pred =check_array(y_obs, y_pred)
     return  np.mean(np.abs((y_obs - y_pred) / y_obs)) * 100
 
-def execute_model_12(data):
+def execute_model_21(data):
+    #-----------------------------------------------------------------------------
+    #   Data Preparation
+    #-----------------------------------------------------------------------------
 
-    #data = pd.read_csv('DAFD_transfer_learning_regime_1.csv', delimiter=';')
-    #print('*******************', filename)
-    #data = pd.read_csv(filename, delimiter=delimiter)
-    #print(data)
+    ### add address of the dataset
+    '''
+    loc = ("https://github.com/CIDARLAB/neural-optimizer/transfer_learning/dataset/DAFD_transfer_learning_regime_2.xlsx")
 
-    X1 = data[['Orifice width', 'Aspect ratio', 'Expansion ratio', 'Normalized orifice length',
+    ### Read data
+    wb = xlrd.open_workbook(loc) 
+    sheet = wb.sheet_by_index(0)
+
+    ### Extract input and output
+    X=[]
+    Y=[]
+    for i in range(1,sheet.nrows): ## data
+        X.append(sheet.row_values(i))
+        Y.append(sheet.cell_value(i,12)) ## Regimes
+        
+    X=np.array(X)
+    X=X[:,1:9] # Geometry Features
+    Y=np.array(Y) # Regime labels
+
+    X1=[] #Regime 1 data-set
+    X2=[] #Regime 2 data-set
+    Y11=[] # Regime 1 Output 1 (generation rate)
+    Y12=[] # Regime 1 Output 2 (size)
+    Y21=[] # Regime 2 Output 1 (generation rate)
+    Y22=[] # Regime 2 Output 2 (size)
+
+    for i in range(len(Y)):
+        if Y[i]==1 :
+            X1.append(X[i,:])
+            Y11.append(sheet.cell_value(i+1,10))
+            Y12.append(sheet.cell_value(i+1,11))
+        
+        elif Y[i]==2 :
+            X2.append(X[i,:])
+            Y21.append(sheet.cell_value(i+1,10))
+            Y22.append(sheet.cell_value(i+1,11))
+    '''
+
+    X2 = data[['Orifice width', 'Aspect ratio', 'Expansion ratio', 'Normalized orifice length',
                 'Normalized water inlet', 'Normalized oil inlet', 'Flow rate ratio', 'capillary']]
-    Y12 = data['Size']
-
-    #for col in X1.columns:
-    #    if col != 'Orifice width' and col != 'Expansion ratio':
-    #        X1[col] = X1[col].str.replace(',', '.')
+    Y21 = data['Rate']
 
     ###train-test split
     validation_size = 0.20
 
-    X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X1, Y12, test_size=validation_size) #Regime 1 Output 2
+    X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X2, Y21, test_size=validation_size) #Regime 2 Output 1
 
     ###data scaling
     scaler=StandardScaler().fit(X_train)
@@ -73,7 +106,7 @@ def execute_model_12(data):
     Y_train=np.array(Y_train)
     X_test =np.array(X_test)
     Y_test =np.array(Y_test)
-    Y12 = np.array(Y12)
+    Y21 = np.array(Y21)
 
     #-----------------------------------------------------------------------------
     #   Training Nueral Network Model
@@ -86,8 +119,8 @@ def execute_model_12(data):
     ### load second layer weights and keep unchanged to avoid over-fitting
     TLmodel.add(Dense(units = 16, activation='relu', name='dense_2', trainable=False))
     #TLmodel.add(Dropout(0.4))
-    ### update 3rd layer weights to fit the data
-    TLmodel.add(Dense(units = 8, activation='relu', name='new_dense_3'))
+    #update 3rd layer weights to fit the data
+    TLmodel.add(Dense(units = 8, activation='relu', name='new_dense3'))
     #TLmodel.add(Dropout(0.4))
     ### update last layer weights to fit the data
     TLmodel.add(Dense(units = 1, name='new_dense4'))#, kernel_regularizer=regularizers.l2(0.001)))
@@ -95,33 +128,31 @@ def execute_model_12(data):
     #-----------------------------------------------------------------------------
     #   Load the Pre-Trained Nueral Network Model
     #-----------------------------------------------------------------------------
+
     #Load saved weights
-    TLmodel.load_weights(os.path.join(RESOURCES, 'Y12_weights.h5'), by_name=True)
+    TLmodel.load_weights(os.path.join(RESOURCES, 'Y21_weights.h5'), by_name=True)
 
     ### Optimizer
-    adam=optimizers.Adam(lr=0.006)#(lr=0.001,beta_1=0.9, beta_2=0.999, amsgrad=False)
+    adam=optimizers.Adam(lr=0.005)#(lr=0.001,beta_1=0.9, beta_2=0.999, amsgrad=False)
 
     ### Compiling the NN
     TLmodel.compile(optimizer = adam, loss = 'mean_squared_error',metrics=['mean_squared_error', rmse, r_square] )
 
     ### Early stopping
-    earlystopping=EarlyStopping(monitor="mean_squared_error", patience=5, verbose=1, mode='auto')
+    earlystopping=EarlyStopping(monitor="mean_squared_error", patience=10, verbose=1, mode='auto')
 
     ### Fitting the model to the train set
-    result = TLmodel.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size = 1, epochs = 700, callbacks=[earlystopping])
+    result = TLmodel.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size = 1, epochs = 400, callbacks=[earlystopping])
 
     #-----------------------------------------------------------------------------
     #   Predictions of the Trained Nueral Network Model
     #-----------------------------------------------------------------------------
+
     ### Test-set prediction
     y_pred = TLmodel.predict(X_test)
     ### train-set prediction
     y_pred_train = TLmodel.predict(X_train)
 
-    ##-----------------------------------------------------------------------------
-    ##  statistical Summary
-    ##-----------------------------------------------------------------------------
-    
     mae_score = sklearn.metrics.mean_absolute_error(Y_test,y_pred)
     mse_score = sklearn.metrics.mean_squared_error(Y_test,y_pred)
     rmse_score = math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred))
