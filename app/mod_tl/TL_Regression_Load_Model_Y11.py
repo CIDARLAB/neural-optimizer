@@ -103,7 +103,6 @@ def execute_model_11(data):
 
     skf = sklearn.model_selection.KFold(n_splits=3)
     for train_index, test_index in skf.split(X, y):
-        print('========fold')
 
         X_train, X_test = X[train_index], X[test_index]
         Y_train, Y_test = y[train_index], y[test_index]
