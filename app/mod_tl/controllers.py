@@ -160,20 +160,21 @@ def runPretrained(filename, model_idx):
 	complete_filename = os.path.join(RESOURCES, filename)
 	df = readFile(complete_filename)
 
-	mae, mse, rmse, r2 = None, None, None, None
+	mae, mape, mse, rmse, r2 = None, None, None, None, None
 	if model_idx == 'Generation rate - dripping regime':
-		mae, mse, rmse, r2 = execute_model_11(df)
+		mae, mape, mse, rmse, r2 = execute_model_11(df)
 	elif model_idx == 'Droplet diameter - dripping regime':
-		mae, mse, rmse, r2 = execute_model_12(df)
+		mae, mape, mse, rmse, r2 = execute_model_12(df)
 	elif model_idx == 'Generation rate - jetting regime':
-		mae, mse, rmse, r2 = execute_model_21(df)
+		mae, mape, mse, rmse, r2 = execute_model_21(df)
 	elif model_idx == 'Droplet diameter - jetting regime':
-		mae, mse, rmse, r2 = execute_model_22(df)
+		mae, mape, mse, rmse, r2 = execute_model_22(df)
 
 	return ({
 		'Mode': ['Regression'],
 		'Model Name': [model_idx],
 		'MAE': [mae],
+		'MAPE': [mape],
 		'MSE': [mse],
 		'RMSE': [rmse],
 		'R2': [r2]

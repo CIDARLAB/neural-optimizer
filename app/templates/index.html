@@ -34,6 +34,7 @@
 				<li>The tool accepts a csv file containing data in tabular format, with the first row represents the variables/features names. The remaining rows represent the entries for the dataset.</li>
 				<li>Please include the target variable into one of the columns.</li>
 				<li>Please do not leave any empty rows or columns. Empty rows may cause some error, while empty columns can be removed in further steps (not advisable).</li>
+				<li>Tips: check your csv files in a text editor (such as: notepad), to make sure there is no empty row or column.</li>
 				<li>Please refer to <a href="{{ url_for('nn.example') }}">this dataset</a> for an example of the accepted format.</li>
 			</ul>
 			<form action="{{ url_for('nn.analysis') }}" id="train-form" method="post" enctype="multipart/form-data">

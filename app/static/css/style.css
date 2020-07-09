@@ -199,7 +199,6 @@ body {
     width: 150px;
     height: 150px;
     cursor: pointer;
-    border-radius: 10%;
     display: flex; 
     align-items: center;  /*Aligns vertically center */
     justify-content: center; /*Aligns horizontally center */

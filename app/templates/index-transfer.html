@@ -32,7 +32,8 @@
 				<li>Upload your dataset using the following uploader box.</li>
 				<li>Please make sure that your filename does not contain any space.</li>
 				<li>The tool accepts a csv file containing data in tabular format, with the first row represents the variables/features names. The remaining rows represent the entries for the dataset.</li>
-				<li>Please refer to <a href="{{ url_for('nn.example') }}">this dataset</a> for an example of the accepted format.</li>
+				<li>Tips: check your csv files in a text editor (such as: notepad), to make sure there is no empty row or column.</li>
+				<li>Please refer to our <a href="http://dafdcad.org/download">download page</a> for some examples of the accepted format.</li>
 				<li><b>Important: Please make sure that your data exactly following the given format.</b> </li>
 			</ul>
 			<form action="{{ url_for('tl.analysis') }}" id="train-form" method="post" enctype="multipart/form-data">

@@ -51,9 +51,8 @@ def execute_model_12(data):
     #data = pd.read_csv(filename, delimiter=delimiter)
     #print(data)
 
-    X1 = data[['Orifice width', 'Aspect ratio', 'Expansion ratio', 'Normalized orifice length',
-                'Normalized water inlet', 'Normalized oil inlet', 'Flow rate ratio', 'capillary']]
-    Y12 = data['Size']
+    X1 = data.values[:,1:9]
+    Y12 = data.values[:,9]
 
     #for col in X1.columns:
     #    if col != 'Orifice width' and col != 'Expansion ratio':
@@ -123,6 +122,7 @@ def execute_model_12(data):
     ##-----------------------------------------------------------------------------
     
     mae_score = sklearn.metrics.mean_absolute_error(Y_test,y_pred)
+    mape_score =  np.mean(np.abs((Y_test - y_pred) / Y_test)) * 100
     mse_score = sklearn.metrics.mean_squared_error(Y_test,y_pred)
     rmse_score = math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred))
     r2_score = sklearn.metrics.r2_score(Y_test,y_pred)
@@ -139,4 +139,4 @@ def execute_model_12(data):
     print("Root mean squared error (RMSE) for train-set: %f" % math.sqrt(sklearn.metrics.mean_squared_error(Y_train, y_pred_train)))
     print("R square (R^2) for train-set:                 %f" % sklearn.metrics.r2_score(Y_train, y_pred_train))
 
-    return mae_score, mse_score, rmse_score, r2_score
+    return mae_score, mape_score, mse_score, rmse_score, r2_score
