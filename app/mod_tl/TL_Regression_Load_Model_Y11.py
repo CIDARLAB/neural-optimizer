@@ -92,93 +92,112 @@ def execute_model_11(data):
     #data = pd.read_csv(filename, delimiter=delimiter)
     #print(data)
 
-    X1 = data.values[:,1:9]
-    Y11 = data.values[:,9]
+    X = data.values[:,1:9]
+    y = data.values[:,9]
 
-    ###train-test split
-    validation_size = 0.20
+    mae_scores = []
+    mape_scores =  []
+    mse_scores = []
+    rmse_scores = []
+    r2_scores = []
 
-    X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X1, Y11, test_size=validation_size) #Regime 1 Output 1
+    skf = sklearn.model_selection.KFold(n_splits=3)
+    for train_index, test_index in skf.split(X, y):
+        print('========fold')
 
-    ###data scaling
-    scaler=StandardScaler().fit(X_train)
-    X_train=scaler.transform(X_train)
-    X_test=scaler.transform(X_test)
+        X_train, X_test = X[train_index], X[test_index]
+        Y_train, Y_test = y[train_index], y[test_index]
 
-    X_train =np.array(X_train)
-    Y_train=np.array(Y_train)
-    X_test =np.array(X_test)
-    Y_test =np.array(Y_test)
-    Y11 = np.array(Y11)
+        ###train-test split
+        #validation_size = 0.20
 
-    #-----------------------------------------------------------------------------
-    #   Training Nueral Network Model
-    #-----------------------------------------------------------------------------
+        #X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X1, Y11, test_size=validation_size) #Regime 1 Output 1
 
-    ### Initializing NN and Define initial structure as the saved model
-    TLmodel = Sequential()
-    ### load first layer weights and keep unchanged to avoid over-fitting
-    TLmodel.add(Dense(units = 32, input_dim=8, activation='relu', name='dense_1', trainable=False))
-    ### load second layer weights and keep unchanged to avoid over-fitting
-    TLmodel.add(Dense(units = 16, activation='relu', name='dense_2', trainable=False))
-    #TLmodel.add(Dropout(0.4))
-    ### load 3rd layer weights and keep unchanged to avoid over-fitting
-    TLmodel.add(Dense(units = 16, activation='relu', name='dense3', trainable=False))
-    #TLmodel.add(Dropout(0.4))
-    ### update 4th layer weights to fit the data
-    TLmodel.add(Dense(8, activation='relu', name='new_dense4'))
-    #TLmodel.add(Dropout(0.4))
-    ### update last layer weights to fit the data
-    TLmodel.add(Dense(units = 1, name='new_dense5'))#, kernel_regularizer=regularizers.l2(0.001)))
+        ###data scaling
+        scaler=StandardScaler().fit(X_train)
+        X_train=scaler.transform(X_train)
+        X_test=scaler.transform(X_test)
 
-    #-----------------------------------------------------------------------------
-    #   Load the Pre-Trained Nueral Network Model
-    #-----------------------------------------------------------------------------
-    #Load saved weights
-    TLmodel.load_weights(os.path.join(RESOURCES, 'Y11_weights.h5'), by_name=True)
+        X_train =np.array(X_train)
+        Y_train=np.array(Y_train)
+        X_test =np.array(X_test)
+        Y_test =np.array(Y_test)
+        #Y11 = np.array(Y11)
 
-    ### Optimizer
-    adam=optimizers.Adam()#(lr=0.001,beta_1=0.9, beta_2=0.999, amsgrad=False)
+        #-----------------------------------------------------------------------------
+        #   Training Nueral Network Model
+        #-----------------------------------------------------------------------------
 
-    ### Compiling the NN
-    TLmodel.compile(optimizer = adam, loss = 'mean_squared_error',metrics=['mean_squared_error', rmse, r_square] )
+        ### Initializing NN and Define initial structure as the saved model
+        TLmodel = Sequential()
+        ### load first layer weights and keep unchanged to avoid over-fitting
+        TLmodel.add(Dense(units = 32, input_dim=8, activation='relu', name='dense_1', trainable=False))
+        ### load second layer weights and keep unchanged to avoid over-fitting
+        TLmodel.add(Dense(units = 16, activation='relu', name='dense_2', trainable=False))
+        #TLmodel.add(Dropout(0.4))
+        ### load 3rd layer weights and keep unchanged to avoid over-fitting
+        TLmodel.add(Dense(units = 16, activation='relu', name='dense3', trainable=False))
+        #TLmodel.add(Dropout(0.4))
+        ### update 4th layer weights to fit the data
+        TLmodel.add(Dense(8, activation='relu', name='new_dense4'))
+        #TLmodel.add(Dropout(0.4))
+        ### update last layer weights to fit the data
+        TLmodel.add(Dense(units = 1, name='new_dense5'))#, kernel_regularizer=regularizers.l2(0.001)))
 
-    ### Early stopping
-    earlystopping=EarlyStopping(monitor="mean_squared_error", patience=5, verbose=1, mode='auto')
+        #-----------------------------------------------------------------------------
+        #   Load the Pre-Trained Nueral Network Model
+        #-----------------------------------------------------------------------------
+        #Load saved weights
+        TLmodel.load_weights(os.path.join(RESOURCES, 'Y11_weights.h5'), by_name=True)
 
-    ### Fitting the model to the train set
-    result = TLmodel.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size = 1, epochs = 600, callbacks=[earlystopping])
+        ### Optimizer
+        adam=optimizers.Adam()#(lr=0.001,beta_1=0.9, beta_2=0.999, amsgrad=False)
 
-    #-----------------------------------------------------------------------------
-    #   Predictions of the Trained Nueral Network Model
-    #-----------------------------------------------------------------------------
+        ### Compiling the NN
+        TLmodel.compile(optimizer = adam, loss = 'mean_squared_error',metrics=['mean_squared_error', rmse, r_square] )
 
-    ### Test-set prediction
-    y_pred = TLmodel.predict(X_test)
-    ### train-set prediction
-    y_pred_train = TLmodel.predict(X_train)
+        ### Early stopping
+        earlystopping=EarlyStopping(monitor="mean_squared_error", patience=5, verbose=1, mode='auto')
 
-    ##-----------------------------------------------------------------------------
-    ##  statistical Summary
-    ##-----------------------------------------------------------------------------
-    
-    mae_score = sklearn.metrics.mean_absolute_error(Y_test,y_pred)
-    mape_score =  np.mean(np.abs((Y_test - y_pred) / Y_test)) * 100
-    mse_score = sklearn.metrics.mean_squared_error(Y_test,y_pred)
-    rmse_score = math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred))
-    r2_score = sklearn.metrics.r2_score(Y_test,y_pred)
-    
+        ### Fitting the model to the train set
+        result = TLmodel.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size = 1, epochs = 600, callbacks=[earlystopping])
 
-    print("\n")
-    print("Mean absolute error (MAE) for test-set:      %f" % sklearn.metrics.mean_absolute_error(Y_test,y_pred))
-    print("Mean squared error (MSE) for test-set:       %f" % sklearn.metrics.mean_squared_error(Y_test,y_pred))
-    print("Root mean squared error (RMSE) for test-set: %f" % math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred)))
-    print("R square (R^2) for test-set:                 %f" % sklearn.metrics.r2_score(Y_test,y_pred))
+        #-----------------------------------------------------------------------------
+        #   Predictions of the Trained Nueral Network Model
+        #-----------------------------------------------------------------------------
 
-    print("\n")
-    print("Mean absolute error (MAE) for train-set:      %f" % sklearn.metrics.mean_absolute_error(Y_train, y_pred_train))
-    print("Mean squared error (MSE) for train-set:       %f" % sklearn.metrics.mean_squared_error(Y_train, y_pred_train))
-    print("Root mean squared error (RMSE) for train-set: %f" % math.sqrt(sklearn.metrics.mean_squared_error(Y_train, y_pred_train)))
-    print("R square (R^2) for train-set:                 %f" % sklearn.metrics.r2_score(Y_train, y_pred_train))
+        ### Test-set prediction
+        y_pred = TLmodel.predict(X_test)
+        ### train-set prediction
+        y_pred_train = TLmodel.predict(X_train)
 
-    return mae_score, mape_score, mse_score, rmse_score, r2_score
+        ##-----------------------------------------------------------------------------
+        ##  statistical Summary
+        ##-----------------------------------------------------------------------------
+        
+        mae_score = sklearn.metrics.mean_absolute_error(Y_test,y_pred)
+        mape_score =  np.mean(np.abs((Y_test - y_pred) / Y_test)) * 100
+        mse_score = sklearn.metrics.mean_squared_error(Y_test,y_pred)
+        rmse_score = math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred))
+        r2_score = sklearn.metrics.r2_score(Y_test,y_pred)
+        
+
+        print("\n")
+        print("Mean absolute error (MAE) for test-set:      %f" % sklearn.metrics.mean_absolute_error(Y_test,y_pred))
+        print("Mean squared error (MSE) for test-set:       %f" % sklearn.metrics.mean_squared_error(Y_test,y_pred))
+        print("Root mean squared error (RMSE) for test-set: %f" % math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred)))
+        print("R square (R^2) for test-set:                 %f" % sklearn.metrics.r2_score(Y_test,y_pred))
+
+        print("\n")
+        print("Mean absolute error (MAE) for train-set:      %f" % sklearn.metrics.mean_absolute_error(Y_train, y_pred_train))
+        print("Mean squared error (MSE) for train-set:       %f" % sklearn.metrics.mean_squared_error(Y_train, y_pred_train))
+        print("Root mean squared error (RMSE) for train-set: %f" % math.sqrt(sklearn.metrics.mean_squared_error(Y_train, y_pred_train)))
+        print("R square (R^2) for train-set:                 %f" % sklearn.metrics.r2_score(Y_train, y_pred_train))
+
+        mae_scores.append(mae_score)
+        mape_scores.append(mape_score)
+        mse_scores.append(mse_score)
+        rmse_scores.append(rmse_score)
+        r2_scores.append(r2_score)
+
+    return np.mean(mae_scores), np.mean(mape_scores), np.mean(mse_scores), np.mean(rmse_scores), np.mean(r2_scores)
