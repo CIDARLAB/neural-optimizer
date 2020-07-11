@@ -97,6 +97,12 @@ def execute_model_22(data):
     rmse_scores = []
     r2_scores = []
 
+    mae_scores_train = []
+    mape_scores_train =  []
+    mse_scores_train = []
+    rmse_scores_train = []
+    r2_scores_train = []
+
     skf = sklearn.model_selection.KFold(n_splits=3)
     for train_index, test_index in skf.split(X, y):
 
@@ -168,6 +174,12 @@ def execute_model_22(data):
         rmse_score = math.sqrt(sklearn.metrics.mean_squared_error(Y_test,y_pred))
         r2_score = sklearn.metrics.r2_score(Y_test,y_pred)
 
+        mae_score_train = sklearn.metrics.mean_absolute_error(Y_train, y_pred_train)
+        mape_score_train =  np.mean(np.abs((Y_train - y_pred_train) / Y_train)) * 100
+        mse_score_train = sklearn.metrics.mean_squared_error(Y_train, y_pred_train)
+        rmse_score_train = math.sqrt(sklearn.metrics.mean_squared_error(Y_train, y_pred_train))
+        r2_score_train = sklearn.metrics.r2_score(Y_train, y_pred_train)
+        
         print("\n")
         print("Mean absolute error (MAE) for test-set:      %f" % sklearn.metrics.mean_absolute_error(Y_test,y_pred))
         print("Mean squared error (MSE) for test-set:       %f" % sklearn.metrics.mean_squared_error(Y_test,y_pred))
@@ -186,4 +198,10 @@ def execute_model_22(data):
         rmse_scores.append(rmse_score)
         r2_scores.append(r2_score)
 
-    return np.mean(mae_scores), np.mean(mape_scores), np.mean(mse_scores), np.mean(rmse_scores), np.mean(r2_scores)
+        mae_scores_train.append(mae_score_train)
+        mape_scores_train.append(mape_score_train)
+        mse_scores_train.append(mse_score_train)
+        rmse_scores_train.append(rmse_score_train)
+        r2_scores_train.append(r2_score_train)
+
+    return np.mean(mae_scores), np.mean(mape_scores), np.mean(mse_scores), np.mean(rmse_scores), np.mean(r2_scores), np.mean(mae_scores_train), np.mean(mape_scores_train), np.mean(mse_scores_train), np.mean(rmse_scores_train), np.mean(r2_scores_train)

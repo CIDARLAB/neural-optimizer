@@ -160,22 +160,23 @@ def runPretrained(filename, model_idx):
 	complete_filename = os.path.join(RESOURCES, filename)
 	df = readFile(complete_filename)
 
-	mae, mape, mse, rmse, r2 = None, None, None, None, None
+	mae, mape, mse, rmse, r2, mae_train, mape_train, mse_train, rmse_train, r2_train = None, None, None, None, None, None, None, None, None, None
 	if model_idx == 'Generation rate - dripping regime':
-		mae, mape, mse, rmse, r2 = execute_model_11(df)
+		mae, mape, mse, rmse, r2, mae_train, mape_train, mse_train, rmse_train, r2_train = execute_model_11(df)
 	elif model_idx == 'Droplet diameter - dripping regime':
-		mae, mape, mse, rmse, r2 = execute_model_12(df)
+		mae, mape, mse, rmse, r2, mae_train, mape_train, mse_train, rmse_train, r2_train = execute_model_12(df)
 	elif model_idx == 'Generation rate - jetting regime':
-		mae, mape, mse, rmse, r2 = execute_model_21(df)
+		mae, mape, mse, rmse, r2, mae_train, mape_train, mse_train, rmse_train, r2_train = execute_model_21(df)
 	elif model_idx == 'Droplet diameter - jetting regime':
-		mae, mape, mse, rmse, r2 = execute_model_22(df)
+		mae, mape, mse, rmse, r2, mae_train, mape_train, mse_train, rmse_train, r2_train = execute_model_22(df)
 
 	return ({
-		'Mode': ['Regression'],
-		'Model Name': [model_idx],
-		'MAE': [mae],
-		'MAPE': [mape],
-		'MSE': [mse],
-		'RMSE': [rmse],
-		'R2': [r2]
+		'Mode': ['Regression', 'Regression'],
+		'Model Name': [model_idx, model_idx],
+		'Dataset': ['Validation set', 'Training set'],
+		'MAE': [mae, mae_train],
+		'MAPE': [mape, mape_train],
+		'MSE': [mse, mse_train],
+		'RMSE': [rmse, rmse_train],
+		'R2': [r2, r2_train]
 	})
