@@ -3,7 +3,7 @@ amqp==2.5.2
 astor==0.8.0
 astroid==2.2.5
 billiard==3.6.1.0
-celery==4.3.0
+celery==5.2.2
 Click==7.0
 cycler==0.10.0
 dominate==2.4.0
